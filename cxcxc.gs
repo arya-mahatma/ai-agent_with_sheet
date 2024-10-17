@@ -1,42 +1,43 @@
 /**
- * 這段程式碼是為雲育鏈職場AI軟體暨雲端應用課程所設計。
- * 課程內容涵蓋了如何使用Google Apps Script來自動化業務流程，
- * 並應用於AI代理人的開發與雲端應用的整合。
- * 
- * 更多課程資訊請參考雲育鏈官網：https://www.cxcxc.io/agentic-ai-course/
- * 
- * 授權條款：如需課程包班合作，可加入Line官方號進行 https://lin.ee/nlPnBYS。
+ * This code is designed for the Cloud Chain Workplace AI Software and Cloud Application Course.
+ * The course covers how to use Google Apps Script to automate business processes,
+ * and apply it to the development of AI agents and integration with cloud applications.
+ *
+ * For more course information, please refer to the Cloud Chain official website: https://www.cxcxc.io/agentic-ai-course/
+ *
+ * Licensing Terms: For group class cooperation, please add our official Line account: https://lin.ee/nlPnBYS.
  */
 
 
-// api 網址
-// https://ai.google.dev/gemini-api/docs/api-versions?hl=zh-tw
+// API URLs
+// https://ai.google.dev/gemini-api/docs/api-versions
 // https://ai.google.dev/gemini-api/docs/function-calling
 
-// 將Google API Key 當成環境變數
-const apiKey = PropertiesService.getScriptProperties().getProperty("GOOGLE_AI_API_KEY")
+// Store the Google API Key as an environment variable
+const apiKey = PropertiesService.getScriptProperties().getProperty("GOOGLE_AI_API_KEY");
 
 
-// 獲取模型名稱，若未設置則使用預設值 "gemini-1.5-flash"
+// Get the model name, use the default value "gemini-1.5-flash" if not set
 function getModelName() {
   var modelName = PropertiesService.getScriptProperties().getProperty("GEMINI_MODEL_NAME");
-  
-  // 使用明確的條件檢查，避免null或undefined的情況
+
+  // Use explicit conditional checks to avoid null or undefined cases
   if (modelName === null || modelName === undefined || modelName.trim() === "") {
-    modelName = "gemini-1.5-flash";  // 默認值
+    modelName = "gemini-1.5-flash";  // Default value
   }
-  
+
   return modelName;
 }
+
 /**
  * GeminiQA
- * 此函數透過Google Apps Script調用Gemini API，針對單一問題進行問答生成。
- * 功能：接受一個問題字串，並使用Gemini API生成對應的答案。
+ * This function calls the Gemini API through Google Apps Script to generate answers for a single question.
+ * Functionality: Accepts a question string and uses the Gemini API to generate a corresponding answer.
  */
 function GeminiQA(question) {
-  var modelName = getModelName(); // 獲取模型名稱
+  var modelName = getModelName(); // Get the model name
   var url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
-  
+
   var payload = {
     "contents": [{
       "parts": [{
@@ -54,10 +55,10 @@ function GeminiQA(question) {
   try {
     var response = UrlFetchApp.fetch(url, options);
     var json = JSON.parse(response.getContentText());
-    
-    // 取出 content 的 parts 中的 text
+
+    // Extract the text from the parts of the content
     var answer = json.candidates[0].content.parts[0].text;
-    
+
     return answer;
   } catch (error) {
     Logger.log("Error: " + error.toString());
@@ -67,22 +68,21 @@ function GeminiQA(question) {
 
 /**
  * GeminiQAFromImage
- * 此函數處理圖片分析的問答，將圖片轉換為Base64格式後發送給Gemini API。
- * 功能：接受問題和圖片網址，並通過API返回解析結果。
+ * This function handles image analysis Q&A, converting the image to Base64 format before sending it to the Gemini API.
+ * Functionality: Accepts a question and image URL and returns the parsed result through the API.
  */
 function GeminiQAFromImage(question, image_url) {
 
-
-  // 下載圖片
+  // Download the image
   var imageBlob = UrlFetchApp.fetch(image_url).getBlob();
 
-  // 獲取圖片的 MIME 類型
+  // Get the image's MIME type
   var mimeType = imageBlob.getContentType();
 
-  // 將圖片轉換為Base64
+  // Convert the image to Base64
   var imageBase64 = Utilities.base64Encode(imageBlob.getBytes());
-  
-  // 構建API請求的數據
+
+  // Construct the data for the API request
   var payload = {
     "contents": [
       {
@@ -101,7 +101,7 @@ function GeminiQAFromImage(question, image_url) {
     ]
   };
 
-  var modelName = getModelName(); // 獲取模型名稱
+  var modelName = getModelName(); // Get the model name
   var url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
 
   var options = {
@@ -113,11 +113,11 @@ function GeminiQAFromImage(question, image_url) {
   try {
     var response = UrlFetchApp.fetch(url, options);
     var json = JSON.parse(response.getContentText());
-    
-    // 取出 content 的 parts 中的 text
+
+    // Extract the text from the parts of the content
     var answer = json.candidates[0].content.parts[0].text;
-    
-    return answer; // 返回字串結果
+
+    return answer; // Return the string result
   } catch (error) {
     Logger.log("Error: " + error.toString());
     return null;
@@ -127,18 +127,18 @@ function GeminiQAFromImage(question, image_url) {
 
 /**
  * GeminiClassify
- * 此函數實現文本分類，將輸入的文本根據指定分類進行分類操作。
- * 功能：接受分類數組與文本內容，並使用Gemini API進行分類。
+ * This function implements text classification, classifying the input text according to specified categories.
+ * Functionality: Accepts a classification array and text content, and uses the Gemini API for classification.
  */
-function GeminiClassify(class_array, content, extra_prompt="") {
+function GeminiClassify(class_array, content, extra_prompt = "") {
 
-  // 將 class_array 結合為一個 String
+  // Combine class_array into a string
   var classString = class_array.join(", ");
 
-  // 組合 prompt
-  var prompt = "請將以下內容分類為：" + classString + " 。 直接告訴我分類就好，不需要解釋。"+ extra_prompt +"。 內容：" + content ;
+  // Assemble the prompt
+  var prompt = "Please classify the following content as: " + classString + ". Just tell me the classification, no explanation needed." + extra_prompt + ". Content: " + content;
 
-  // 構建API請求的數據
+  // Construct the data for the API request
   var payload = {
     "contents": [{
       "parts": [{
@@ -147,7 +147,7 @@ function GeminiClassify(class_array, content, extra_prompt="") {
     }]
   };
 
-  var modelName = getModelName(); // 獲取模型名稱
+  var modelName = getModelName(); // Get the model name
   var url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
 
   var options = {
@@ -160,11 +160,11 @@ function GeminiClassify(class_array, content, extra_prompt="") {
     var response = UrlFetchApp.fetch(url, options);
     var json = JSON.parse(response.getContentText());
     Logger.log(json);
-    // 取出 content 的 parts 中的 text
+    // Extract the text from the parts of the content
     var classification = json.candidates[0].content.parts[0].text;
-    
-    return classification.replace(/\r?\n|\r/g, '');; // 返回分類結果
-    // return json; // 返回分類結果
+
+    return classification.replace(/\r?\n|\r/g, ''); // Return the classification result
+    // return json; // Return the classification result
   } catch (error) {
     Logger.log("Error: " + error.toString());
     return "Error: " + error.toString();
@@ -173,13 +173,13 @@ function GeminiClassify(class_array, content, extra_prompt="") {
 
 /**
  * GeminiVector001
- * 此函數生成文本的向量表示，適用於需要計算文本相似度的場景。
- * 功能：接受輸入文本，使用Gemini API生成對應的向量。
+ * This function generates a vector representation of text, suitable for scenarios requiring text similarity calculations.
+ * Functionality: Accepts input text and uses the Gemini API to generate a corresponding vector.
  */
 function GeminiVector001(input_value) {
-  
 
-  // 構建API請求的數據
+
+  // Construct the API request data
   var payload = {
     "model": "models/embedding-001",
     "content": {
@@ -189,7 +189,7 @@ function GeminiVector001(input_value) {
     }
   };
 
-  var modelName = getModelName(); // 獲取模型名稱
+  var modelName = getModelName(); // Get the model name. Not used for embeddings but kept for consistency.
   var url = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key=" + apiKey;
 
   var options = {
@@ -201,10 +201,10 @@ function GeminiVector001(input_value) {
   try {
     var response = UrlFetchApp.fetch(url, options);
     var json = JSON.parse(response.getContentText());
-    
-    // 檢查並提取 embedding 的值
+
+    // Check and extract the embedding values
     if (json.embedding && json.embedding.values) {
-      // 將數組轉換為單一字串
+      // Convert the array to a single string
       var vectorString = json.embedding.values.join(", ");
       return vectorString;
     } else {
@@ -219,20 +219,20 @@ function GeminiVector001(input_value) {
 
 /**
  * GeminiVectorSimilarCalculate
- * 此函數計算兩個向量之間的相似度，返回相似度分數。
- * 功能：接受兩個向量字串，計算其餘弦相似度。
+ * This function calculates the similarity between two vectors and returns the similarity score.
+ * Functionality: Accepts two vector strings and calculates their cosine similarity.
  */
 function GeminiVectorSimilarCalculate(vector1_string, vector2_string) {
-  // 將字串轉換為數字數組
+  // Convert strings to number arrays
   var vector1 = vector1_string.split(",").map(Number);
   var vector2 = vector2_string.split(",").map(Number);
 
-  // 確保兩個向量的長度相同
+  // Ensure both vectors have the same length
   if (vector1.length !== vector2.length) {
     return "Error: Vectors must have the same length.";
   }
 
-  // 計算餘弦相似度
+  // Calculate cosine similarity
   var dotProduct = 0;
   var magnitude1 = 0;
   var magnitude2 = 0;
@@ -251,57 +251,57 @@ function GeminiVectorSimilarCalculate(vector1_string, vector2_string) {
   }
 
   var similarity = dotProduct / (magnitude1 * magnitude2);
-  return similarity; // 返回相似度結果
+  return similarity; // Return the similarity result
 }
 
 /**
  * doGet
- * 此函數處理HTTP GET請求，並根據傳入的查詢參數對指定的Google Sheets中的數據進行查詢、過濾、分頁等操作。
- * 
- * 功能概述：
- * - 根據傳入的工作表名稱（sheet_name）和查詢模式（query_mode）進行數據查詢。
- * - 支持三種查詢模式：
- *   - normal：正常的精準查詢，根據指定條件篩選數據，並返回符合條件的結果。
- *   - rag：在精準查詢的基礎上，基於向量相似度進行進階查詢。會根據search_term生成向量，並與指定欄位中的向量數據進行相似度比較，然後根據指定的threshold進行過濾，僅保留相似度大於等於threshold的結果。向量比較後，將移除所有與向量相關的欄位。
- *   - graph_rag：預留未實現模式。
- * - 支持根據指定的條件（filter_column）對數據進行篩選，如大於、小於、等於等。在RAG模式下，先進行篩選再進行向量比較。
- * - 可以指定需要排除的欄位（exclude_column），這些欄位將不會出現在返回的結果中。RAG模式下，篩選和向量比較後，會移除帶有 "vector" 字樣的欄位。
- * - 可以限制返回的記錄數量（query_item_limit），以及支持分頁（page 和 pageSize）。
- * - 查詢結果將以 JSON 格式返回，並且會記錄每次請求的日誌，包含時間戳和查詢參數。
- * 
- * Query String 參數：
- * - sheet_name (required): 要查詢的工作表名稱。
- * - query_mode (optional): 查詢模式，支持 normal、rag 和 graph_rag，預設為 normal。
- * - exclude_columns (optional): 需要排除的欄位名稱列表，以逗號分隔（如 colA,colB,colC）。
- * - filter_column (optional): 篩選條件，指定格式為 "欄位名[運算符]值"，可包含多個條件，以逗號分隔。
- * - page (optional): 返回結果的頁碼，預設為第1頁。
- * - page_size (optional): 每頁返回的記錄數量，預設為10。
- * - search_term (required for rag): 用於 RAG 模式的查詢字串，將轉換為向量進行相似度比較。
- * - compare_vector_column (required for rag): 用於與 search_term 生成的向量進行比較的欄位名稱。
- * - threshold (optional for rag): 用於過濾 RAG 模式結果的相似度閾值，僅保留相似度大於等於該閾值的結果。
- * 
- * 返回結果：
- * - 結果將以 JSON 格式返回，包含符合條件的查詢結果。
- * - 在 RAG 模式下，結果中將包含一個新欄位 "threshold"，表示相似度分數。
- * - 在 RAG 模式的最終結果中，所有與向量相關的欄位將被移除。
- * 
- * 記錄日誌：
- * - 每次請求都會記錄日誌，日誌格式為 "timestamp=xxxxx&user_query=???"
- * 
- * 主要邏輯：
- * 1. 解析查詢參數並初始化變數。
- * 2. 獲取指定的Google Sheets中的所有數據。
- * 3. 在 normal 和 rag 模式下根據查詢模式應用不同的查詢邏輯。
- * 4. 根據篩選條件過濾數據。在 RAG 模式下，先進行一般篩選，再進行向量相似度比較。
- * 5. 對 RAG 模式下的結果應用相似度比較和閾值過濾，並在結果中添加相似度分數。
- * 6. 如果指定了最大記錄數量，則限制返回的結果數量。
- * 7. 在 RAG 模式下，完成向量比較後移除所有與向量相關的欄位。
- * 8. 應用分頁邏輯。
- * 9. 記錄請求日誌。
- * 10. 返回結果。
+ * This function handles HTTP GET requests and performs queries, filtering, and pagination on data in the specified Google Sheet based on the incoming query parameters.
+ *
+ * Functionality Overview:
+ * - Queries data based on the provided sheet name (`sheet_name`) and query mode (`query_mode`).
+ * - Supports three query modes:
+ *   - `normal`: Standard exact match query, filters data based on specified criteria, and returns matching results.
+ *   - `rag`:  Performs an advanced query based on vector similarity in addition to the standard query. Generates a vector from `search_term` and compares it to vector data in a specified column. Filters the results based on the provided `threshold`, keeping only results with similarity greater than or equal to the threshold. After vector comparison, removes all vector-related fields.
+ *   - `graph_rag`: Reserved mode, not yet implemented.
+ * - Supports filtering data based on specified criteria (`filter_column`) using operators such as greater than, less than, equal to, etc.  In RAG mode, filtering is performed before vector comparison.
+ * - Allows specifying fields to be excluded (`exclude_columns`), which will not be included in the returned results.  In RAG mode, fields containing "vector" are removed after filtering and vector comparison.
+ * - Supports limiting the number of returned records (`query_item_limit`) and pagination (`page` and `pageSize`).
+ * - Returns query results in JSON format and logs each request, including timestamp and query parameters.
+ *
+ * Query String Parameters:
+ * - `sheet_name` (required): The name of the sheet to query.
+ * - `query_mode` (optional): The query mode, supports `normal`, `rag`, and `graph_rag`. Defaults to `normal`.
+ * - `exclude_columns` (optional):  A comma-separated list of column names to exclude (e.g., `colA,colB,colC`).
+ * - `filter_column` (optional): Filter criteria, specified in the format "column_name[operator]value". Multiple criteria can be included, separated by commas.
+ * - `page` (optional): Page number of the results to return. Defaults to 1.
+ * - `page_size` (optional):  Number of records to return per page. Defaults to 10.
+ * - `search_term` (required for `rag`): The search string for RAG mode, which will be converted into a vector for similarity comparison.
+ * - `compare_vector_column` (required for `rag`): The column name to compare with the vector generated from `search_term`.
+ * - `threshold` (optional for `rag`): The similarity threshold for filtering RAG mode results. Only results with similarity greater than or equal to this threshold are retained.
+ *
+ * Return Value:
+ * - Results are returned in JSON format, containing the matching query results.
+ * - In RAG mode, a new field "threshold" is included in the results, representing the similarity score.
+ * - In the final RAG mode results, all vector-related fields are removed.
+ *
+ * Logging:
+ * - Each request is logged in the format "timestamp=xxxxx&user_query=???"
+ *
+ * Main Logic:
+ * 1. Parses query parameters and initializes variables.
+ * 2. Retrieves all data from the specified Google Sheet.
+ * 3. Applies different query logic based on the query mode (`normal` or `rag`).
+ * 4. Filters data based on filter criteria. In RAG mode, general filtering is applied before vector similarity comparison.
+ * 5. Applies similarity comparison and threshold filtering to RAG mode results, adding the similarity score to the results.
+ * 6. Limits the number of returned results if `query_item_limit` is specified.
+ * 7. Removes all vector-related fields after vector comparison in RAG mode.
+ * 8. Applies pagination logic.
+ * 9. Logs the request.
+ * 10. Returns the results.
  */
 function doGet(e) {
-  // 解析 query string 參數
+  // Parse query string parameters
   var sheetName = e.parameter.sheet_name;
   var excludeColumns = e.parameter.exclude_columns ? e.parameter.exclude_columns.split(",").map(col => col.toLowerCase().trim()) : [];
   var queryMode = e.parameter.query_mode ? e.parameter.query_mode.toLowerCase() : "normal";
@@ -314,57 +314,60 @@ function doGet(e) {
   Logger.log("Page: " + page + ", Page Size: " + pageSize);
   Logger.log(e.parameter);
 
-  // 獲取指定工作表
+  // Get the specified sheet
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   if (!sheet) {
     Logger.log("Error: Sheet not found.");
     return ContentService.createTextOutput("Error: Sheet not found.");
   }
 
-  // 獲取標題行
+  // Get header row
   var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   Logger.log("Headers: " + JSON.stringify(headers));
 
-  // 計算要讀取的資料範圍
+  // Calculate the data range to read
   var startRow = (page - 1) * pageSize + 2;
   var endRow = startRow + pageSize - 1;
   Logger.log("Start Row: " + startRow + ", End Row: " + endRow);
 
-  // 確保不超過表格的總行數
+
+  // Ensure it doesn't exceed the total number of rows in the sheet
   var lastRow = sheet.getLastRow();
   Logger.log("Last Row in Sheet: " + lastRow);
   if (startRow > lastRow) {
     Logger.log("No Data: Returning Empty Array");
     return ContentService.createTextOutput(JSON.stringify([])).setMimeType(ContentService.MimeType.JSON);
   }
+
   if (endRow > lastRow) {
     endRow = lastRow;
   }
 
-  // 獲取資料範圍
+
+  // Get data range
   var dataRange = sheet.getRange(startRow, 1, endRow - startRow + 1, sheet.getLastColumn());
   var data = dataRange.getValues();
   Logger.log("Data Retrieved: " + JSON.stringify(data));
 
-  // 取得需要保留的欄位索引
+  // Get indices of columns to keep
   var validIndices = [];
   headers.forEach((header, index) => {
     var lowerHeader = header.toLowerCase().trim();
-    // 在 RAG 模式下，不立即移除包含 "vector" 的欄位
+    // In RAG mode, don't remove columns containing "vector" immediately
     if (queryMode === "rag" || (!lowerHeader.includes("vector") && !excludeColumns.includes(lowerHeader))) {
       validIndices.push(index);
     }
   });
   Logger.log("Valid Indices: " + validIndices);
 
-  // 解析所有的 query string 作為篩選條件
+  // Parse all query strings as filter conditions
   var filters = parseQueryStringsAsFilters(e.parameter, headers);
   Logger.log("Filters: " + JSON.stringify(filters));
 
   var results = [];
 
   if (queryMode === "normal") {
-    // 正常模式下的查詢邏輯
+    // Query logic for normal mode
     for (var i = 0; i < data.length; i++) {
       if (applyFilters(data[i], filters)) {
         let resultObject = {};
@@ -378,7 +381,7 @@ function doGet(e) {
       }
     }
   } else if (queryMode === "rag") {
-    // RAG 模式下的查詢邏輯
+    // Query logic for RAG mode
     var searchTerm = e.parameter.search_term;
     var compareVectorColumn = e.parameter.compare_vector_column ? e.parameter.compare_vector_column.toLowerCase().trim() : null;
     var threshold = e.parameter.threshold ? parseFloat(e.parameter.threshold) : 0.7;
@@ -387,11 +390,11 @@ function doGet(e) {
       return ContentService.createTextOutput("Error: Missing search_term or compare_vector_column for RAG mode.").setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 將 searchTerm 轉換為向量字串
+    // Convert searchTerm to vector string
     var searchTermVector = GeminiVector001(searchTerm);
     Logger.log("Search Term Vector: " + searchTermVector);
 
-    // 先應用篩選條件
+    // Apply filter conditions first
     var filteredResults = [];
     for (var i = 0; i < data.length; i++) {
       if (applyFilters(data[i], filters)) {
@@ -404,7 +407,8 @@ function doGet(e) {
       }
     }
 
-    // 對篩選後的結果進行向量比較
+
+    // Perform vector comparison on filtered results
     for (var i = 0; i < filteredResults.length; i++) {
       var resultObject = filteredResults[i];
       var vectorValue = resultObject[compareVectorColumn];
@@ -413,12 +417,12 @@ function doGet(e) {
       Logger.log("Similarity: " + similarity);
 
       if (similarity >= threshold) {
-        resultObject["threshold"] = similarity; // 添加相似度分數
+        resultObject["threshold"] = similarity; // Add similarity score
         results.push(resultObject);
       }
     }
 
-    // 完成向量比較後，移除 vector 相關欄位
+    // Remove vector-related fields after vector comparison
     results = results.map(result => {
       validIndices.forEach(index => {
         const header = headers[index];
@@ -428,19 +432,22 @@ function doGet(e) {
       });
       return result;
     });
+
   } else if (queryMode === "graph_rag") {
-    // TODO: 添加 graph_rag 模式的查詢邏輯
+    // TODO: Add query logic for graph_rag mode
   }
+
 
   Logger.log("Results: " + JSON.stringify(results));
 
-  // 記錄 log
+  // Log the request
   var log = "timestamp=" + new Date().toISOString() + "&user_query=" + JSON.stringify(e.parameters);
   Logger.log("Log: " + log);
 
-  saveLogToSheet("GET資料記錄", log);
+  saveLogToSheet("GET Data Log", log);
 
-  // 返回結果，以 JSON 格式返回過濾後的結果數據
+
+  // Return results, filtered result data is returned in JSON format
   return ContentService.createTextOutput(JSON.stringify(results)).setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -456,7 +463,8 @@ function parseQueryStringsAsFilters(params, headers) {
       for (var i = 0; i < operators.length; i++) {
         var operator = operators[i];
 
-        // 情况1：运算符在键名的结尾
+
+        // Case 1: Operator is at the end of the key name
         if (key.endsWith(operator)) {
           var columnName = key.substring(0, key.length - operator.length).trim().toLowerCase();
           var filterValue = value;
@@ -468,7 +476,8 @@ function parseQueryStringsAsFilters(params, headers) {
           }
         }
 
-        // 情况2：运算符在值的开头
+
+        // Case 2: Operator is at the beginning of the value
         if (value.startsWith(operator)) {
           var columnName = key.trim().toLowerCase();
           var filterValue = value.substring(operator.length).trim();
@@ -481,7 +490,7 @@ function parseQueryStringsAsFilters(params, headers) {
         }
       }
 
-      // 如果没有找到运算符，假定是等于条件
+      // If no operator is found, assume equality condition
       if (!operatorFound) {
         var columnName = key.trim().toLowerCase();
         var filterValue = value;
@@ -493,12 +502,12 @@ function parseQueryStringsAsFilters(params, headers) {
     }
   }
 
+
   Logger.log("Parsed Filters: " + JSON.stringify(filters));
   return filters;
 }
 
-
-// 應用篩選條件
+// Apply filter conditions
 function applyFilters(row, filters) {
   for (var i = 0; i < filters.length; i++) {
     var filter = filters[i];
@@ -531,90 +540,92 @@ function applyFilters(row, filters) {
 
 /**
  * doPost
- * 
- * 此函數處理HTTP POST請求，根據傳入的參數執行不同的功能，包括：
- * - 將請求的JSON數據插入到指定的Google Sheets工作表中。
- * - 根據指定的郵件信息發送郵件給多個收件人。
- * - 將網路圖片下載並存放到Google Drive指定的資料夾中。
- * - 生成PDF文件，基於指定的Google Docs範本文件並替換範本中的參數。
- * 
- * 功能概述：
- * - 解析並處理POST請求中的JSON數據。
- * - 根據 `function_name` 決定執行的功能：
- *   - `insert_data`: 將數據插入到指定的Google Sheets工作表中。
- *   - `mail_user`: 發送電子郵件給指定的收件人。
- *   - `store_image_to_drive`: 將指定的網路圖片下載並儲存到Google Drive中。
- *     - 若 `folder_name` 提供，圖片會儲存在指定資料夾中。
- *     - 若 `folder_name` 未提供，則預設使用當前 Spreadsheet 的名稱作為資料夾名稱。
- *   - `create_pdf_from_doc_template`: 基於Google Docs範本生成PDF檔案，並可指定參數進行動態替換。
- *     - 若 `folder_name` 未提供，則預設使用範本文件的父資料夾。
- *     - 若 `pdf_file_name` 未提供，則使用當前時間與亂碼進行命名。
- *     - 若 `template_doc_name` 未提供，預設使用 "文件範本"。
- * 
- * POST Body 參數：
- * - function_name (required): 要執行的功能名稱，可以是 `insert_data`、`mail_user`、`store_image_to_drive` 或 `create_pdf_from_doc_template`。
- * - 當 function_name 為 `create_pdf_from_doc_template` 時：
- *   - template_doc_name (optional): 範本文件的名稱，若未指定，預設為 "文件範本"。
- *   - pdf_file_name (optional): PDF檔案名稱，若未指定，使用當前時間與亂碼命名。
- *   - folder_name (optional): 儲存 PDF 的資料夾名稱，若未指定，使用範本所在資料夾。
- *   - replace_map (required): 包含 key-value 的替換字典，用於替換範本中的文字標記。
- * 
- * 返回結果：
- * - JSON格式，包含一個 `result` 欄位，指示操作是否成功：
- *   - "success" 表示數據成功插入、郵件成功發送或PDF成功生成。
- *   - "failure" 表示操作失敗，並包含 `error` 欄位描述錯誤訊息。
- *   - 當執行 `create_pdf_from_doc_template` 時，成功則返回生成的 PDF 檔案鏈接。
- * 
- * 記錄日誌：
- * - 每次請求都會記錄日誌，包含時間戳、請求內容及操作結果，日誌會保存到指定的Google Sheets工作表。
+ *
+ * This function handles HTTP POST requests and performs different functions based on the provided parameters, including:
+ * - Inserting JSON data from the request into a specified Google Sheet.
+ * - Sending emails to multiple recipients based on provided email information.
+ * - Downloading images from URLs and storing them in a specified Google Drive folder.
+ * - Generating PDF files from a Google Docs template, replacing placeholders with provided parameters.
+ *
+ * Functionality Overview:
+ * - Parses and processes JSON data from the POST request.
+ * - Determines the function to execute based on the `function_name` parameter:
+ *   - `insert_data`: Inserts data into a specified Google Sheet.
+ *   - `mail_user`: Sends emails to specified recipients.
+ *   - `store_image_to_drive`: Downloads and stores images from a URL to Google Drive.
+ *     - If `folder_name` is provided, the image is stored in the specified folder.
+ *     - If `folder_name` is not provided, the current Spreadsheet's name is used as the folder name.
+ *   - `create_pdf_from_doc_template`: Generates a PDF file based on a Google Docs template, allowing for dynamic parameter replacement.
+ *     - If `folder_name` is not provided, the parent folder of the template file is used.
+ *     - If `pdf_file_name` is not provided, the current time and a random string are used for the file name.
+ *     - If `template_doc_name` is not provided, "Document Template" is used as the default.
+ *
+ * POST Body Parameters:
+ * - `function_name` (required): The name of the function to execute. Can be `insert_data`, `mail_user`, `store_image_to_drive`, or `create_pdf_from_doc_template`.
+ * - When `function_name` is `create_pdf_from_doc_template`:
+ *   - `template_doc_name` (optional): The name of the template document. Defaults to "Document Template".
+ *   - `pdf_file_name` (optional): The name of the PDF file. If not specified, uses current time and a random string.
+ *   - `folder_name` (optional): The name of the folder to store the PDF in. If not specified, uses the template's parent folder.
+ *   - `replace_map` (required):  A key-value dictionary for replacing placeholders in the template.
+ *
+ * Return Value:
+ * - JSON format with a `result` field indicating the success of the operation:
+ *   - "success" indicates data insertion, email sending, or PDF generation was successful.
+ *   - "failure" indicates the operation failed, including an `error` field describing the error message.
+ *   - When executing `create_pdf_from_doc_template`, returns the link to the generated PDF file upon success.
+ *
+ * Logging:
+ * - Each request is logged, including timestamp, request content, and operation result. The log is saved to a specified Google Sheet.
  */
-
 function doPost(e) {
   try {
-    // 解析POST請求中的JSON數據
+    // Parse JSON data from the POST request
     var requestBody = JSON.parse(e.postData.contents);
     Logger.log("Request Body: " + JSON.stringify(requestBody));
-    
-    // 確認function_name參數是否存在
+
+
+    // Check if the function_name parameter exists
     var functionName = requestBody.function_name;
     if (!functionName) {
       throw new Error("Missing function_name parameter.");
     }
-    
-    // 根據function_name的值來區分執行的功能
+
+    // Determine the function to execute based on the value of function_name
     if (functionName === "insert_data") {
-      // 調用插入數據的功能
+      // Call the function to insert data
       return insertData(requestBody);
     } else if (functionName === "mail_user") {
-      // 調用寄送email的功能
+      // Call the function to send email
       return mailUser(requestBody);
     } else if (functionName === "store_image_to_drive") {
-      // 調用儲存圖片到Google Drive的功能
+      // Call the function to store image to Google Drive
       var folderName = requestBody.folder_name || SpreadsheetApp.getActiveSpreadsheet().getName();
       return storeImageToDrive(requestBody.image_url, folderName);
     } else if (functionName === "create_pdf_from_doc_template") {
-      // 調用生成 PDF 的功能
+      // Call the function to generate PDF
       var templateDocName = requestBody.template_doc_name;
       var pdfFileName = requestBody.pdf_file_name;
       var folderName = requestBody.folder_name;
       var replaceMap = requestBody.replace_map;
-      
-      // 檢查必要參數
+
+      // Check for required parameters
       if (!replaceMap) {
         throw new Error("Missing parameters for creating PDF.");
       }
 
-      // 調用 createPDFfromTemplate 函數來生成 PDF
+      // Call the createPDFfromTemplate function to generate the PDF
       var result = createPDFfromDocTemplate(templateDocName, pdfFileName, replaceMap, folderName);
       return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
     } else {
       throw new Error("Invalid function_name: " + functionName);
     }
+
   } catch (error) {
-    // 捕捉錯誤並記錄日誌
+    // Catch errors and log them
     Logger.log("Error: " + error.message);
 
-    // 返回失敗結果
+
+    // Return a failure result
     return ContentService.createTextOutput(JSON.stringify({ result: "failure", error: error.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
@@ -622,130 +633,141 @@ function doPost(e) {
 
 /**
  * createPDFfromDocTemplate
- * 
- * 此函數基於指定的Google Docs範本文件，生成PDF檔案，並替換範本中的指定參數。
- * 
- * 功能：
- * - 使用範本文件生成PDF，並根據傳入的replace_map進行內容替換。
- * - 若 `template_doc_name` 未指定，預設為 "文件範本"。
- * - 若 `folder_name` 未指定，則使用範本文件所在的資料夾。
- * - 若 `pdf_file_name` 未指定，則使用當前時間加上隨機碼命名；若有指定，則在時間後附加用戶指定的名稱。
- * - 最後返回生成的PDF鏈接和文件名稱。
- * 
- * @param {string} templateDocName - Google Docs範本的名稱。
- * @param {string} pdfFileName - 生成的PDF檔案名稱。
- * @param {object} replaceMap - 替換字典，用於替換範本中的標記。
- * @param {string} folderName - 儲存生成PDF的資料夾名稱。
- * @returns {string} - 包含生成結果的JSON字串，若成功包含PDF的鏈接，若失敗包含錯誤訊息。
+ *
+ * This function generates a PDF file based on a specified Google Docs template, replacing specified parameters within the template.
+ *
+ * Functionality:
+ * - Generates a PDF file using a template document and performs content replacement based on the provided `replace_map`.
+ * - If `template_doc_name` is not specified, defaults to "Document Template".
+ * - If `folder_name` is not specified, uses the folder where the template file is located.
+ * - If `pdf_file_name` is not specified, uses the current time and a random string for the file name; if specified, appends the user-specified name after the time.
+ * - Returns the generated PDF link and file name.
+ *
+ * @param {string} templateDocName - The name of the Google Docs template.
+ * @param {string} pdfFileName - The name of the generated PDF file.
+ * @param {object} replaceMap - The replacement dictionary used to replace placeholders in the template.
+ * @param {string} folderName - The name of the folder to store the generated PDF.
+ * @returns {string} - A JSON string containing the generation result.  Includes the PDF link if successful, or an error message if failed.
  */
 function createPDFfromDocTemplate(templateDocName, pdfFileName, replaceMap, folderName) {
   try {
-    // 如果 templateDocName 沒有指定，則使用 "文件範本" 作為預設值
+    // If templateDocName is not specified, use "Document Template" as the default
     if (!templateDocName) {
-      templateDocName = "文件範本";
+      templateDocName = "Document Template";  // Or "文件範本" if you want to keep the original Chinese name
     }
 
-    // 透過檔名來取得範本文件
+    // Get the template file by name
     var files = DriveApp.getFilesByName(templateDocName);
-    
+
+
     if (!files.hasNext()) {
       return JSON.stringify({
         "result": "failure",
-        "message": "範本文件未找到"
+        "message": "Template file not found."
       });
     }
 
     var templateFile = files.next();
     var templateDoc = DocumentApp.openById(templateFile.getId());
-    
-    // 複製範本文件
+
+    // Copy the template file
     var copiedDoc = templateFile.makeCopy();
     var copiedDocId = copiedDoc.getId();
     var copiedDocFile = DocumentApp.openById(copiedDocId);
-    
-    // 進行多個內容變更，replaceMap 是一個物件，用來進行多個文字替換
+
+
+    // Make multiple content changes. replaceMap is an object used for multiple text replacements.
     var body = copiedDocFile.getBody();
-    
+
     for (var key in replaceMap) {
       if (replaceMap.hasOwnProperty(key)) {
-        body.replaceText("{{"+key+"}}", replaceMap[key]); // 將範本中的 key 替換為對應的 value
+        body.replaceText("{{" + key + "}}", replaceMap[key]); // Replace the key in the template with the corresponding value
       }
     }
 
-    // 儲存變更
+    // Save changes
     copiedDocFile.saveAndClose();
-    
-    // 如果沒有提供 folderName，使用範本文件所在的資料夾
+
+    // If folderName is not provided, use the folder where the template file is located.
     var targetFolder;
     if (!folderName) {
-      targetFolder = templateFile.getParents().next(); // 使用範本文件的父資料夾
+      targetFolder = templateFile.getParents().next(); // Use the template file's parent folder
     } else {
-      // 透過名稱找到指定的資料夾
+      // Find the specified folder by name
       var folders = DriveApp.getFoldersByName(folderName);
-      
+
+
       if (!folders.hasNext()) {
         return JSON.stringify({
           "result": "failure",
-          "message": "指定的資料夾未找到"
+          "message": "Specified folder not found."
         });
       }
 
       targetFolder = folders.next();
     }
 
-    // 生成當前時間戳，格式：yyyymmddHHMMss
+
+    // Generate current timestamp, format: yyyymmddHHMMss
     var timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyyMMddHHmmss");
-    
-    // 生成隨機碼
-    var randomString = Math.random().toString(36).substring(2, 8); // 產生6位亂碼
-    
-    // 如果沒有提供 pdfFileName，則使用當前時間與亂碼來命名；如果有提供，則附加在時間後
+
+    // Generate random string
+    var randomString = Math.random().toString(36).substring(2, 8); // Generate 6-digit random string
+
+    // If pdfFileName is not provided, use the current time and random code for naming; if provided, append it after the time
     if (!pdfFileName) {
       pdfFileName = timestamp + "-" + randomString;
     } else {
       pdfFileName = timestamp + "-" + pdfFileName;
     }
-    
-    // 將複製的文件轉換為 PDF
+
+
+    // Convert the copied document to PDF
     var pdfBlob = DriveApp.getFileById(copiedDocId).getAs('application/pdf');
-    
-    // 在目標資料夾中儲存 PDF，檔名由參數決定
+
+    // Save the PDF in the target folder, the file name is determined by the parameter
     var pdfFile = targetFolder.createFile(pdfBlob).setName(pdfFileName + '.pdf');
-    
-    // 設定權限為「有連結的人可讀」
+
+
+    // Set permissions to "Anyone with the link can view"
     pdfFile.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-    
-    // 刪除複製的文件
+
+
+    // Delete the copied file
     DriveApp.getFileById(copiedDocId).setTrashed(true);
-    
-    // 取得 PDF 檔案的網頁連結
+
+
+    // Get the web link of the PDF file
     var webLink = pdfFile.getUrl();
-    
-    // 回傳 JSON 結果
+
+
+    // Return JSON result
     var result = {
       "result": "success",
       "fileName": pdfFileName + '.pdf',
       "fileLink": webLink,
-      "message": "PDF 已生成並設為有連結的人可讀"
+      "message": "PDF generated and set to 'Anyone with the link can view'."
     };
-    
-    Logger.log(JSON.stringify(result)); // 可用於檢查結果
+
+
+    Logger.log(JSON.stringify(result)); // Can be used to check the result
     return JSON.stringify(result);
 
   } catch (error) {
     Logger.log("Error: " + error.message);
     return JSON.stringify({
       "result": "failure",
-      "message": "發生錯誤: " + error.message
+      "message": "An error occurred: " + error.message
     });
   }
 }
 
 
-// 儲存圖片至google drive，若無指定資料夾名字，則以當前spreadsheet名字當成資料夾名字
+
+// Store image to Google Drive. If no folder name is specified, use the current spreadsheet's name as the folder name.
 function storeImageToDrive(imageUrl, folderName) {
   try {
-    // 1. 檢查指定資料夾是否存在，不存在則創建
+    // 1. Check if the specified folder exists. If not, create it.
     var folders = DriveApp.getFoldersByName(folderName);
     var folder;
     if (folders.hasNext()) {
@@ -753,29 +775,30 @@ function storeImageToDrive(imageUrl, folderName) {
     } else {
       folder = DriveApp.createFolder(folderName);
     }
-    
-    // 2. 使用 UrlFetchApp 抓取圖片
+
+    // 2. Use UrlFetchApp to fetch the image
     var response = UrlFetchApp.fetch(imageUrl);
     var blob = response.getBlob();
-    
-    // 3. 儲存圖片到資料夾
-    var fileName = "downloaded_image_" + new Date().getTime() + ".jpg"; // 使用當前時間生成唯一檔名
+
+
+    // 3. Save the image to the folder
+    var fileName = "downloaded_image_" + new Date().getTime() + ".jpg"; // Use current time to generate a unique file name
     var file = folder.createFile(blob.setName(fileName));
-    
-    // 4. 返回圖片檔案的URL
+
+
+    // 4. Return the URL of the image file
     Logger.log("Image saved successfully: " + file.getUrl());
     return ContentService.createTextOutput(JSON.stringify({ result: "success", image_url: file.getUrl() }))
       .setMimeType(ContentService.MimeType.JSON);
-    
+
   } catch (error) {
     Logger.log("Error: " + error.toString());
-    return ContentService.createTextOutput(JSON.stringify({ result: "failure", error: "圖片抓取或儲存失敗" }))
+    return ContentService.createTextOutput(JSON.stringify({ result: "failure", error: "Failed to fetch or save image." }))
       .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
-
-// 插入數據功能
+// Insert data function
 function insertData(requestBody) {
   var sheetName = requestBody.sheet_name;
   if (!sheetName) {
@@ -785,12 +808,13 @@ function insertData(requestBody) {
   var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = spreadsheet.getSheetByName(sheetName);
 
-  // 如果工作表不存在，則創建一個新的
+
+  // If the sheet doesn't exist, create a new one
   if (!sheet) {
     Logger.log("Sheet not found: " + sheetName + ". Creating a new sheet.");
     sheet = spreadsheet.insertSheet(sheetName);
-    
-    // 根據 requestBody 中的鍵值生成第一行的表頭
+
+    // Generate the header row based on the keys in requestBody
     var headers = Object.keys(requestBody);
     sheet.appendRow(headers);
   }
@@ -819,26 +843,27 @@ function insertData(requestBody) {
   sheet.appendRow(newRow);
   Logger.log("Data inserted successfully into sheet: " + sheetName);
 
+
   var log = "timestamp=" + new Date().toISOString() + "&user_payload=" + JSON.stringify(requestBody);
   Logger.log("Log: " + log);
-  saveLogToSheet("POST資料記錄", log);
+  saveLogToSheet("POST Data Log", log);
 
   return ContentService.createTextOutput(JSON.stringify({ result: "success" }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
 
-// 寄送email功能
+// Send email function
 function mailUser(requestBody) {
   var senderEmails = requestBody.sender_emails;
-  var emailSubject = requestBody.email_subject || "信件標題：" + new Date().toLocaleString(); // 預設為當天時間
+  var emailSubject = requestBody.email_subject || "Email Subject: " + new Date().toLocaleString(); // Default to current date and time
   var emailContent = requestBody.email_content;
 
   if (!senderEmails || senderEmails.length === 0) {
     throw new Error("Missing sender_emails parameter.");
   }
 
-  // 發送郵件
+  // Send emails
   for (var i = 0; i < senderEmails.length; i++) {
     var recipient = senderEmails[i];
     MailApp.sendEmail({
@@ -849,15 +874,19 @@ function mailUser(requestBody) {
     Logger.log("Email sent to: " + recipient);
   }
 
+
   var log = "timestamp=" + new Date().toISOString() + "&email_sent_to=" + JSON.stringify(senderEmails);
   Logger.log("Log: " + log);
-  saveLogToSheet("郵件記錄", log);
+  saveLogToSheet("Email Log", log);
+
 
   return ContentService.createTextOutput(JSON.stringify({ result: "email_sent_success" }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-// 紀錄日誌到指定工作表
+
+
+// Log data to the specified sheet
 function saveLogToSheet(sheetName, log) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheetName);
   if (!sheet) {
@@ -867,25 +896,22 @@ function saveLogToSheet(sheetName, log) {
 }
 
 
+
 // Gemini with Webscraper
 // https://apify.com/store
 
 
+
 // Gemini with Function tool
 function GeminiQAWithWeb(user_question) {
-  
-  var modelName = getModelName(); // 獲取模型名稱
+
+  var modelName = getModelName(); // Get the model name
   var url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
-  
-  // user_question="what kind book in there https://www.amazon.co.jp/kindle-dbs/storefront?storeType=browse&node=2275256051"
-  // user_question="visit content from https://langchain-ai.github.io/langgraph/tutorials/introduction/#requirements"
-  // user_question="你會讀中文嗎?";
-  // user_question= "https://langchain-ai.github.io/langgraph/tutorials/introduction/#requirements  Help me look at the code in this website and what is the key point? please use chinese reply"
 
 
-  Logger.log("發送請求到 Gemini API，問題: " + user_question);
+  Logger.log("Sending request to Gemini API, Question: " + user_question);
 
-   var payload = {
+  var payload = {
     "contents": [
       {
         "role": "user",
@@ -899,73 +925,72 @@ function GeminiQAWithWeb(user_question) {
     "tools": [
       {
         "function_declarations": [
-{
-  "name": "GeminiFetchUrl",
-  "description": "Sends an HTTP request to a specified URL with various options for method, headers, and payload, and includes the user's original question.",
-  "parameters": {
-    "type": "object",
-    "properties": {
-      "url": {
-        "type": "string",
-        "description": "The URL to send the request to."
-      },
-      "user_question": {
-        "type": "string",
-        "description": "The question intent from the question ."
-      },
-      "method": {
-        "type": "string",
-        "description": "The HTTP method to use, e.g., GET, POST, PUT, DELETE.",
-        "enum": ["get", "delete", "patch", "post", "put"]
-      },
-      "headers": {
-        "type": "object",
-        "description": "Optional HTTP headers to include in the request.",
-        "properties": {
-          "Content-Type": {
-            "type": "string",
-            "description": "The MIME type of the body of the request, e.g., application/json."
-          },
-          "Authorization": {
-            "type": "string",
-            "description": "Optional authorization token for the request."
-          },
-          "Custom-Header": {
-            "type": "string",
-            "description": "A custom header that you may want to add to the request."
+          {
+            "name": "GeminiFetchUrl",
+            "description": "Sends an HTTP request to a specified URL with various options for method, headers, and payload, and includes the user's original question.",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "The URL to send the request to."
+                },
+                "user_question": {
+                  "type": "string",
+                  "description": "The question intent from the question."
+                },
+                "method": {
+                  "type": "string",
+                  "description": "The HTTP method to use, e.g., GET, POST, PUT, DELETE.",
+                  "enum": ["get", "delete", "patch", "post", "put"]
+                },
+                "headers": {
+                  "type": "object",
+                  "description": "Optional HTTP headers to include in the request.",
+                  "properties": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The MIME type of the body of the request, e.g., application/json."
+                    },
+                    "Authorization": {
+                      "type": "string",
+                      "description": "Optional authorization token for the request."
+                    },
+                    "Custom-Header": {
+                      "type": "string",
+                      "description": "A custom header that you may want to add to the request."
+                    }
+                  }
+                },
+                "payload": {
+                  "type": "string",
+                  "description": "Optional data to send with the request, typically used for POST or PUT requests. This should be a JSON string, a URL-encoded form data string, or another format depending on the Content-Type."
+                },
+                "contentType": {
+                  "type": "string",
+                  "description": "The content type of the payload, e.g., application/json, application/x-www-form-urlencoded."
+                },
+                "muteHttpExceptions": {
+                  "type": "boolean",
+                  "description": "Whether to prevent exceptions from being thrown on HTTP errors (status codes 4xx or 5xx)."
+                },
+                "followRedirects": {
+                  "type": "boolean",
+                  "description": "Whether to automatically follow HTTP redirects (3xx responses). Defaults to true."
+                },
+                "validateHttpsCertificates": {
+                  "type": "boolean",
+                  "description": "Whether to validate HTTPS certificates. Defaults to true."
+                }
+              },
+              "required": ["url", "user_question"]
+            }
           }
-        }
-      },
-      "payload": {
-        "type": "string",
-        "description": "Optional data to send with the request, typically used for POST or PUT requests. This should be a JSON string, a URL-encoded form data string, or another format depending on the Content-Type."
-      },
-      "contentType": {
-        "type": "string",
-        "description": "The content type of the payload, e.g., application/json, application/x-www-form-urlencoded."
-      },
-      "muteHttpExceptions": {
-        "type": "boolean",
-        "description": "Whether to prevent exceptions from being thrown on HTTP errors (status codes 4xx or 5xx)."
-      },
-      "followRedirects": {
-        "type": "boolean",
-        "description": "Whether to automatically follow HTTP redirects (3xx responses). Defaults to true."
-      },
-      "validateHttpsCertificates": {
-        "type": "boolean",
-        "description": "Whether to validate HTTPS certificates. Defaults to true."
-      },
-
-    },
-    "required": ["url", "user_question"]
-  }
-}
         ]
       }
     ]
   };
-Logger.log("發送的 payload: " + JSON.stringify(payload, null, 2));
+  Logger.log("Payload being sent: " + JSON.stringify(payload, null, 2));
 
   var options = {
     "method": "post",
@@ -975,77 +1000,84 @@ Logger.log("發送的 payload: " + JSON.stringify(payload, null, 2));
   };
 
   var response = UrlFetchApp.fetch(url, options);
-    Logger.log("收到的初始回應: " + response.getContentText());
+  Logger.log("Initial Response Received: " + response.getContentText());
 
   var jsonResponse = JSON.parse(response.getContentText());
 
-  // 解析並處理回應
+
+  // Parse and process the response
   var finalResult = parseGeminiResponse(jsonResponse);
-  Logger.log("最終結果: " + finalResult);
+  Logger.log("Final Result: " + finalResult);
 
   return finalResult;
 
 }
 
+
 /**
- * 解析 Gemini 的回應並執行相應操作
+ * Parses the Gemini response and performs the corresponding actions
  */
 function parseGeminiResponse(response) {
-  Logger.log("解析回應: " + JSON.stringify(response, null, 2));
-  
+  Logger.log("Parsing Response: " + JSON.stringify(response, null, 2));
+
   if (response.candidates && response.candidates.length > 0) {
     var candidate = response.candidates[0];
-    
-    // 檢查是否為 function call
+
+    // Check if it's a function call
     if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
       var part = candidate.content.parts[0];
       if (part.functionCall) {
-        Logger.log("檢測到 function call: " + part.functionCall.name);
+        Logger.log("Function call detected: " + part.functionCall.name);
         var functionName = part.functionCall.name;
-        // var args = JSON.parse(part.functionCall.args);
-        var args = part.functionCall.args;
-        Logger.log(functionName+" arg is  " + args);
-        // 調用相應的函數
-        // return functionName
+        var argsString = part.functionCall.args;
+
+        try {
+          var args = JSON.parse(argsString);
+        } catch (e) {
+          Logger.log("Error parsing function arguments: " + e);
+          return "Error parsing function arguments: " + e;
+        }
+
+        Logger.log(functionName + " args are: " + JSON.stringify(args));
+        // Call the corresponding function
         return executeFunctionCall(functionName, args);
       } else if (part.text) {
-        // 如果是普通文本回應
-        Logger.log("收到普通文本回應");
+        // If it's a regular text response
+        Logger.log("Received regular text response");
         return part.text;
       }
     }
   }
-  Logger.log("未能解析 Gemini 的回應");
-  return "未能解析 Gemini 的回應";
+
+  Logger.log("Failed to parse Gemini response");
+  return "Failed to parse Gemini response";
 }
 
 
 
-
 /**
- * 根據 function call 調度相應的函數
+ * Dispatches the appropriate function based on the function call
  */
 function executeFunctionCall(functionName, args) {
-  Logger.log("執行函數: " + functionName + "，參數: " + JSON.stringify(args, null, 2));
-  
+  Logger.log("Executing function: " + functionName + ", Arguments: " + JSON.stringify(args, null, 2));
+
   if (functionName === "GeminiFetchUrl") {
-    
     return GeminiFetchUrl(args);
   } else {
-    Logger.log("未定義的函數名稱: " + functionName);
-    return "未定義的函數名稱: " + functionName;
+    Logger.log("Undefined function name: " + functionName);
+    return "Undefined function name: " + functionName;
   }
 }
 
+
 /**
- * 執行抓取網頁內容的函數
+ * Executes the function to fetch web page content
  */
 function GeminiFetchUrl(args) {
+  Utilities.sleep(2000); // Pause for 2 seconds to avoid overwhelming the API
 
-  Logger.log("先緩緩等待");
+  Logger.log("Fetching web page content, URL: " + args.url);
 
-
-  Logger.log("開始抓取網頁內容，URL: " + args.url);
 
   var url = args.url;
   var method = args.method || "get";
@@ -1057,6 +1089,7 @@ function GeminiFetchUrl(args) {
   var validateHttpsCertificates = args.validateHttpsCertificates !== undefined ? args.validateHttpsCertificates : true;
   var user_question = args.user_question;
 
+
   var options = {
     "method": method,
     "headers": headers,
@@ -1067,27 +1100,28 @@ function GeminiFetchUrl(args) {
     "validateHttpsCertificates": validateHttpsCertificates
   };
 
-  Logger.log("抓取網頁選項: " + JSON.stringify(options, null, 2));
+
+  Logger.log("Fetch URL Options: " + JSON.stringify(options, null, 2));
 
   var response = UrlFetchApp.fetch(url, options);
   var content = response.getContentText();
-  Logger.log("抓取到的內容: " + content);
-  
-  // 將抓取到的內容和用戶問題再發送給 Gemini
+  Logger.log("Fetched Content: " + content);
+
+  // Send the fetched content and user question back to Gemini
   return sendFinalRequestToGemini(user_question, content);
 }
 
 /**
- * 將用戶問題和抓取的數據發送回 Gemini 以獲取最終回答
+ * Sends the user question and fetched data back to Gemini to get the final answer
  */
 function sendFinalRequestToGemini(user_question, fetchedData) {
-  var modelName = getModelName(); // 獲取模型名稱
+  var modelName = getModelName(); // Get the model name
   var url = "https://generativelanguage.googleapis.com/v1beta/models/" + modelName + ":generateContent?key=" + apiKey;
 
-var payload = {
+  var payload = {
     "contents": [{
       "parts": [{
-        "text": user_question +" 。 爬取的內容如下 " + fetchedData
+        "text": user_question + ". Fetched content is as follows: " + fetchedData
       }]
     }]
   };
@@ -1099,23 +1133,26 @@ var payload = {
     "muteHttpExceptions": true
   };
 
-  Logger.log("發送最終請求的 payload: " + JSON.stringify(payload, null, 2));
+
+  Logger.log("Final Request Payload: " + JSON.stringify(payload, null, 2));
 
   var response = UrlFetchApp.fetch(url, options);
   var finalResponse = JSON.parse(response.getContentText());
-  
-  Logger.log("最終回應: " + JSON.stringify(finalResponse, null, 2));
+
+
+  Logger.log("Final Response: " + JSON.stringify(finalResponse, null, 2));
   var finalResult = finalResponse.candidates[0].content.parts[0].text;
   return finalResult;
 }
 
 
 
+
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('自訂功能表')
-      .addItem('教學說明', 'showTeachingModal')
-      .addToUi();
+  ui.createMenu('Custom Menu')
+    .addItem('Tutorial', 'showTeachingModal')
+    .addToUi();
 }
 
 function showTeachingModal() {
@@ -1130,10 +1167,10 @@ function showTeachingModal() {
     </style>
   </head>
   <body>
-    <h1>查看完整教學</h1>
-    <p>您可以點擊以下按鈕在新視窗中查看完整的教學文件及其所有功能：</p>
+    <h1>View Full Tutorial</h1>
+    <p>Click the button below to view the complete tutorial document and all its features in a new window:</p>
     <a href="https://github.com/cxcxc-io/ai-agent_with_sheet/blob/main/README.md" target="_blank">
-      <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer;">在新視窗中打開 GitHub 教學</button>
+      <button style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer;">Open GitHub Tutorial in New Window</button>
     </a>
   </body>
   </html>
@@ -1142,5 +1179,5 @@ function showTeachingModal() {
   var htmlOutput = HtmlService.createHtmlOutput(htmlContent)
     .setWidth(400)
     .setHeight(200);
-  SpreadsheetApp.getUi().showModalDialog(htmlOutput, '教學說明');
+  SpreadsheetApp.getUi().showModalDialog(htmlOutput, 'Tutorial');
 }

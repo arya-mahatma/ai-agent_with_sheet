@@ -1,235 +1,247 @@
-# 在Google Spreadsheet中使用Google Apps Script調用Gemini API
+# Using Google Apps Script to Call the Gemini API in Google Spreadsheets
 
-## 概述
+## Overview
 
-本教學將介紹如何在Google Spreadsheet中使用Google Apps Script調用Gemini API來實現自動化功能。透過這個教學，您將學會如何使用Apps Script來完成問答生成、文本分類及向量操作。
+This tutorial demonstrates how to use Google Apps Script to call the Gemini API within Google Spreadsheets for automation.  You will learn how to use Apps Script to perform question answering, text classification, and vector operations.
 
-## 先決條件
+## Prerequisites
 
-取得Google API金鑰（API Key）
-請確保您已經從Google AI Studio 取得了Gemini API的API Key。
-並在該Appscript管理介面，新增了指令碼屬性 Script Property
+* **Obtain a Google API Key:** Ensure you have a Gemini API key from Google AI Studio.
+* **Add Script Properties:** Add the API key as a script property in the Apps Script editor.
+* **Add the Code:** Ensure the provided code is added to your Google Apps Script project.
 
+## Function Guide and Directory
 
-確保已經將程式碼添加到您的Google Apps Script專案中。
-
-## 各功能導引目錄
-
-# 在Google Spreadsheet中使用Google Apps Script調用Gemini API
+# Using Google Apps Script to Call the Gemini API in Google Spreadsheets
 
 [GitHub Repository](https://github.com/cxcxc-io/ai-agent_with_sheet)
 
-[教學文件 - tutorial.md](https://github.com/cxcxc-io/ai-agent_with_sheet/blob/main/tutorial.md)
+[Tutorial Document - tutorial.md](https://github.com/cxcxc-io/ai-agent_with_sheet/blob/main/tutorial.md)
 
-## 目錄
-- [GeminiQA 使用教學](#geminiqa-使用教學)
-- [GeminiQAFromImage 使用教學](#geminiqafromimage-使用教學)
-- [GeminiClassify 使用教學](#geminiclassify-使用教學)
-- [GeminiVector001 使用教學](#geminivector001-使用教學)
-- [GeminiVectorSimilarCalculate 使用教學](#geminivectorsimilarcalculate-使用教學)
-- [GeminiQAWithWeb 使用教學](#geminiqawithweb-使用教學)
-- [doGet 使用教學](#doget-使用教學)
-- [doPost 使用教學](#dopost-使用教學)
 
-## `GeminiQA` 使用教學
+## Table of Contents
+- [GeminiQA Tutorial](#geminiqa-tutorial)
+- [GeminiQAFromImage Tutorial](#geminiqafromimage-tutorial)
+- [GeminiClassify Tutorial](#geminiclassify-tutorial)
+- [GeminiVector001 Tutorial](#geminivector001-tutorial)
+- [GeminiVectorSimilarCalculate Tutorial](#geminivectorsimilarcalculate-tutorial)
+- [GeminiQAWithWeb Tutorial](#geminiqawithweb-tutorial)
+- [doGet Tutorial](#doget-tutorial)
+- [doPost Tutorial](#dopost-tutorial)
 
-### 功能：
-`GeminiQA` 函數用於透過Google Apps Script調用Gemini API，針對您提出的問題生成對應的答案。您只需要提供一個問題，Gemini API將返回最合適的答案。
 
-### 使用方式：
+## `GeminiQA` Tutorial
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQA`：
+### Functionality:
+
+The `GeminiQA` function uses Google Apps Script to call the Gemini API and generate answers to your questions. You simply provide a question, and the Gemini API returns the most appropriate answer.
+
+### Usage:
+
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiQA`:
    ```javascript
-   =GeminiQA("你的問題")
-
-
-
-## `GeminiQA` 使用教學
-
-### 功能：
-`GeminiQA` 函數用於透過Google Apps Script調用Gemini API，針對您提出的問題生成對應的答案。您只需要提供一個問題，Gemini API將返回最合適的答案。
-
-### 使用方式：
-
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQA`：
-   ```javascript
-   =GeminiQA("你的問題")
+   =GeminiQA("Your question")
    ```
 
-## `GeminiQAFromImage` 使用教學
+## `GeminiQAFromImage` Tutorial
 
-### 功能：
-`GeminiQAFromImage` 函數用於透過Google Apps Script調用Gemini API，將圖片轉換為Base64格式後進行問答生成。您可以提供一個問題和圖片的網址，並由Gemini API返回解析結果。
+### Functionality:
 
-### 使用方式：
+The `GeminiQAFromImage` function uses Google Apps Script to call the Gemini API, converting an image to Base64 format before performing question answering.  You provide a question and the image URL, and the Gemini API returns the analysis.
 
+### Usage:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQAFromImage`：
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiQAFromImage`:
    ```javascript
-   =GeminiQAFromImage("你的問題", "圖片網址")
+   =GeminiQAFromImage("Your question", "Image URL")
    ```
 
-## `GeminiClassify` 使用教學
 
-### 功能：
-`GeminiClassify` 函數用於透過Google Apps Script調用Gemini API，將輸入的文本內容根據指定的分類進行分類操作。您可以提供一個分類數組和要分類的文本內容，Gemini API將返回對應的分類結果。
+## `GeminiClassify` Tutorial
 
-### 使用方式：
+### Functionality:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiClassify`：
+The `GeminiClassify` function uses Google Apps Script to call the Gemini API to classify text content according to specified categories. You provide an array of categories and the text to be classified, and the Gemini API returns the corresponding classification result.
+
+### Usage:
+
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiClassify`:
    ```javascript
-   =GeminiClassify({"分類1", "分類2", "分類3"}, "要分類的內容")
+   =GeminiClassify({"Category 1", "Category 2", "Category 3"}, "Text to classify")
    ```
 
-## `GeminiVector001` 使用教學
+## `GeminiVector001` Tutorial
 
-### 功能：
-`GeminiVector001` 函數用於透過Google Apps Script調用Gemini API，生成文本的向量表示。該向量表示可以用於計算文本相似度或進行其他向量操作。
+### Functionality:
 
-### 使用方式：
+The `GeminiVector001` function uses Google Apps Script to call the Gemini API to generate a vector representation of text. This vector representation can be used to calculate text similarity or perform other vector operations.
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiVector001`：
+### Usage:
+
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiVector001`:
    ```javascript
-   =GeminiVector001("要生成向量的文本")
-    ```
-## `GeminiVectorSimilarCalculate` 使用教學
+   =GeminiVector001("Text to generate vector from")
+   ```
 
-### 功能：
-`GeminiVectorSimilarCalculate` 函數用於透過Google Apps Script計算兩個向量之間的相似度。該相似度通常以餘弦相似度的形式表示，範圍在 -1 到 1 之間。該函數可以用於比較兩段文本的相似程度，前提是這兩段文本已經被向量化。
 
-### 使用方式：
+## `GeminiVectorSimilarCalculate` Tutorial
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiVectorSimilarCalculate`：
+### Functionality:
+
+The `GeminiVectorSimilarCalculate` function uses Google Apps Script to calculate the similarity between two vectors. This similarity is typically represented as cosine similarity, ranging from -1 to 1.  This function can be used to compare the similarity of two pieces of text, provided they have already been vectorized.
+
+### Usage:
+
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiVectorSimilarCalculate`:
    ```javascript
-   =GeminiVectorSimilarCalculate("向量1的字串", "向量2的字串")
-    ```
+   =GeminiVectorSimilarCalculate("String of Vector 1", "String of Vector 2")
+   ```
 
-### 使用範例
+### Example Usage:
+
 ```
 =GeminiVectorSimilarCalculate("0.123, 0.456, 0.789", "0.321, 0.654, 0.987")
 ```
 
-## `GeminiQAWithWeb` 使用教學
 
-### 功能：
-`GeminiQAWithWeb` 由於Gemini尚未支援中文當作function call，請注意此方法一定要用英文來問, 函數用於透過Google Apps Script調用Gemini API，處理更為複雜的問答生成任務。這個函數允許在問答過程中使用特定功能（如抓取網頁內容）來補充和擴展答案，從而提升回答的準確性和全面性。
+## `GeminiQAWithWeb` Tutorial
 
-### 使用方式：
+### Functionality:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQAWithWeb`：
+The `GeminiQAWithWeb` function, **requires English prompts as Gemini's function calling doesn't fully support other languages yet**, uses Google Apps Script to call the Gemini API to handle more complex question-answering tasks. This function allows the use of specific features (such as fetching web content) during the question-answering process to supplement and expand answers, thereby improving accuracy and comprehensiveness.
+
+### Usage:
+
+1. **In Google Sheets:**
+   - Enter the following formula in any cell to call `GeminiQAWithWeb`:
    ```javascript
-   =GeminiQAWithWeb("你的問題，請用英文表達，若有網址，則會幫你訪問此網址")
+   =GeminiQAWithWeb("Your question in English. If you include a URL, it will be accessed.")
    ```
-### 使用範例
+
+### Example Usage:
+
 ```
-GeminiQAWithWeb("What content is available on https://example.com?")
+=GeminiQAWithWeb("What content is available on https://example.com?")
 ```
 
-## `doGet` 使用教學
+## `doGet` Tutorial
 
-### 功能：
-`doGet` 函數用於處理HTTP GET請求，從Google Spreadsheet中提取數據並根據查詢參數進行過濾、排序及分頁。此功能特別適合於需要從表格中動態提取數據的應用場景，例如生成API端點以供外部應用程序訪問數據。
+### Functionality:
 
-### 使用方式：
+The `doGet` function handles HTTP GET requests, retrieving data from a Google Spreadsheet and filtering, sorting, and paginating it based on query parameters. This is particularly useful for applications that require dynamically retrieving data from a spreadsheet, such as creating API endpoints for external applications.
 
-1. **在Google Apps Script中部署Web應用**：
-   - 在Google Apps Script編輯器中，點擊 `部署` > `部署為網頁應用`。
-   - 設定誰可以訪問應用為 `任何擁有此應用程式網址的人`。
-   - 點擊 `部署` 並獲取應用的URL。
+### Usage:
 
-2. **通過HTTP GET請求使用`doGet`**：
-   - 使用Web瀏覽器或HTTP客戶端（如Postman、cURL）訪問該應用的URL，並添加查詢參數進行數據查詢。
-   - 範例URL格式：
+1. **Deploy as a Web App:**
+   - In the Google Apps Script editor, click `Deploy` > `New Deployment`.
+   - Set "Who has access to the app" to `Anyone`.
+   - Click `Deploy` and obtain the web app URL.
+
+2. **Access via HTTP GET Request:**
+   - Use a web browser or HTTP client (like Postman or cURL) to access the deployed URL with query parameters for data retrieval.
+   - Example URL format:
    ```url
    https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=normal&filter_column=colA=ValueA&exclude_columns=colB
-### 共通的查詢參數說明
-* **sheet_name** (required): 指定要查詢的工作表名稱。
-* **query_mode** (optional): 查詢模式，支持 normal、rag 和 graph_rag 模式。預設為 normal。
-* **exclude_columns** (optional): 需要排除的欄位名稱列表，以逗號分隔（如 colA,colB,colC）。
-- **page** (optional): 指定返回結果的頁碼，預設為第1頁。
-- **page_size** (optional): 指定每頁返回的記錄數量，預設為10。
+   ```
+### Common Query Parameters:
+* **sheet_name** (required): Specifies the sheet name to query.
+* **query_mode** (optional):  Query mode, supports `normal`, `rag`, and `graph_rag`. Defaults to `normal`.
+* **exclude_columns** (optional):  Comma-separated list of column names to exclude (e.g., `colA,colB,colC`).
+- **page** (optional): Specifies the page number of results to return. Defaults to 1.
+- **page_size** (optional): Specifies the number of records per page. Defaults to 10.
 
-### `doGet` 模式查詢說明與範例
 
-### normal 模式
+### `doGet` Mode-Specific Query Parameters and Examples
 
-#### 說明：
-`normal` 模式是最基本的查詢模式，允許您根據指定的查詢參數從Google Spreadsheet中提取並篩選數據。您可以使用篩選條件、排除特定欄位、進行分頁等操作。
+### `normal` Mode
 
-#### 查詢參數：
+#### Description:
 
-- **資料表內任意欄位**: 依照你資料表現有的欄位資料篩選
+The `normal` mode is the most basic query mode, allowing you to extract and filter data from the Google Spreadsheet based on specified query parameters.  You can use filter criteria, exclude specific columns, and paginate the results.
 
-#### 範例：
-查詢 `Sheet1` 中符合 `colA` 等於 `ValueA` 的數據，排除 `colB`，並顯示第1頁的前10條結果。
+#### Query Parameters:
+- **Any Column in Spreadsheet**: Filter by any existing column in your data.
+
+#### Example:
+
+Query `Sheet1` for data where `colA` equals `ValueA`, exclude `colB`, and display the first 10 results on page 1.
 
 ```url
 https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=normal&exclude_columns=colB&page=1&page_size=10&your_data_column_name>=10
 ```
 
-### rag 模式
+### `rag` Mode
 
-#### 說明：
-`rag` 模式（基於向量檢索的增強生成模式）允許您將查詢字串轉換為向量，並與指定欄位中的向量進行相似度比較。此模式特別適合於需要基於語義相似度進行數據篩選的場景。
+#### Description:
 
-#### 查詢參數：
-- **search_term**: 用於查詢的字串，將被轉換為向量以進行相似度比較。
-- **compare_vector_column**: 指定與 `search_term` 生成的向量進行比較的欄位名稱。
-- **threshold**: 指定相似度閾值，僅保留相似度大於等於該閾值的結果。
+The `rag` mode (Retrieval Augmented Generation) allows you to convert a query string into a vector and compare it against vectors in a specified column for similarity. This mode is particularly useful for scenarios requiring data filtering based on semantic similarity.
 
-#### 範例：
-查詢 `Sheet1` 中，`search_term` 與 `vector_col` 中的向量相似度大於等於 `0.75` 的數據，並顯示第1頁的前10條結果。
+#### Query Parameters:
+- **search_term**: The string to query, which will be converted to a vector for similarity comparison.
+- **compare_vector_column**: The column name to compare the `search_term` vector against.
+- **threshold**: The similarity threshold.  Only results with similarity greater than or equal to this threshold are returned.
+
+
+#### Example:
+Query `Sheet1` where the similarity between `search_term` and vectors in `vector_col` is greater than or equal to `0.75`, and display the first 10 results on page 1.
 
 ```url
 https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=rag&search_term=Example%20Query&compare_vector_column=vector_col&threshold=0.75&page=1&page_size=10
 ```
 
-## `doPost` 使用教學
 
-### 功能：
-`doPost` 函數用於處理HTTP POST請求，根據 `function_name` 參數執行不同的操作：
-- **`insert_data`**：將請求的JSON數據插入到指定的Google Spreadsheet工作表中，並根據表頭自動匹配相應的欄位進行插入。
-- **`mail_user`**：根據提供的收件人列表發送郵件，若未指定信件標題，則會自動使用當天日期作為預設標題。
+## `doPost` Tutorial
 
-這些功能適合於需要自動化地將數據寫入Google Spreadsheet或發送郵件的情境。
+### Functionality:
 
-### 使用方式：
+The `doPost` function handles HTTP POST requests, performing different actions based on the `function_name` parameter:
+- **`insert_data`**: Inserts the requested JSON data into the specified Google Spreadsheet sheet, automatically matching fields based on headers.
+- **`mail_user`**: Sends emails to a provided list of recipients. If no subject is specified, the current date is used as the default subject.
 
-#### 1. 在Google Apps Script中部署Web應用：
-   - 在Google Apps Script編輯器中，點擊 `部署` > `部署為網頁應用`。
-   - 設定應用的訪問權限為 `任何擁有此應用程式網址的人`。
-   - 點擊 `部署`，並獲取應用的URL。
+These functions are suitable for scenarios requiring automated data writing to Google Spreadsheets or sending emails.
 
-#### 2. 通過HTTP POST請求使用`doPost`：
-   - 使用HTTP客戶端（如Postman、cURL）向應用的URL發送POST請求。
-   - 根據不同的功能，在POST Body中指定 `function_name` 及其他所需參數。
+### Usage:
 
-### POST Body 格式：
-請求正文應為JSON格式，包含以下參數：
+1. **Deploy as a Web App:**
+   - In the Google Apps Script editor, click `Deploy` > `New Deployment`.
+   - Set "Who has access to the app" to `Anyone`.
+   - Click `Deploy` and obtain the web app URL.
 
-#### 通用參數：
-- **function_name**: 指定所需執行的功能，可以是 `insert_data` 或 `mail_user`。
+2. **Access via HTTP POST Request:**
+   - Use an HTTP client (like Postman or cURL) to send a POST request to the deployed URL.
+   - Specify the `function_name` and other required parameters in the POST body based on the desired functionality.
 
-#### `insert_data` 模式：
-- **sheet_name**: 必須參數，指定要插入數據的Google Spreadsheet工作表名稱。
-- 其他字段：需對應Google Spreadsheet中的列名。
 
-#### `mail_user` 模式：
-- **sender_emails**: 必須參數，收件人的郵件地址列表。
-- **email_subject**: 可選參數，信件的標題；若未提供，則會使用當天日期作為標題。
-- **email_content**: 必須參數，信件內容，支持HTML格式。
+### POST Body Format:
 
-### 範例：
+The request body should be in JSON format, containing the following parameters:
 
-#### 1. 插入數據至工作表 (`insert_data` 模式)：
-將 `name` 和 `email` 插入至名為 `Sheet1` 的工作表中。
+#### Common Parameters:
+
+- **function_name**: Specifies the function to execute, which can be `insert_data` or `mail_user`.
+
+#### `insert_data` Mode:
+
+- **sheet_name**:  Required.  Specifies the name of the Google Spreadsheet sheet to insert data into.
+- Other fields: Must correspond to column names in the Google Spreadsheet.
+
+#### `mail_user` Mode:
+- **sender_emails**: Required.  A list of recipient email addresses.
+- **email_subject**: Optional.  The email subject. If not provided, the current date will be used as the subject.
+- **email_content**: Required.  The email content. Supports HTML formatting.
+
+
+### Examples:
+
+
+#### 1. Inserting data into a sheet (`insert_data` mode):
+
+Insert `name` and `email` into a sheet named `Sheet1`.
 
 ```json
 {
@@ -240,8 +252,9 @@ https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_m
 }
 ```
 
-使用cURL發送請求：
-```
+Using cURL:
+
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
@@ -253,18 +266,25 @@ curl -X POST \
   }'
 ```
 
-#### 2. 發送郵件 (mail_user 模式)：
 
-發送一封內容為 Welcome! 的信件，標題為當天日期，給多個收件人。
-```
+
+#### 2. Sending an email (`mail_user` mode):
+
+Send an email with the content "Welcome!" and the current date as the subject to multiple recipients.
+
+
+```json
 {
   "function_name": "mail_user",
   "sender_emails": ["user1@example.com", "user2@example.com"],
   "email_content": "<h1>Welcome!</h1><p>Thank you for joining us!</p>"
 }
 ```
-使用cURL發送請求
-```
+
+
+Using cURL:
+
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
@@ -274,4 +294,3 @@ curl -X POST \
     "email_content": "<h1>Welcome!</h1><p>Thank you for joining us!</p>"
   }'
 ```
-

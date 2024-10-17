@@ -1,291 +1,286 @@
-# 雲育鏈職場AI軟體暨雲端應用課程 - Google Apps Script 工具集
+# Cloud Education Chain Workplace AI Software and Cloud Application Course - Google Apps Script Toolkit
 
-## 專案簡介
+## Project Overview
 
-此專案包含一系列為[雲育鏈職場AI軟體暨雲端應用課程](https://www.cxcxc.io/agentic-ai-course/)設計的Google Apps Script範例程式碼。這些程式碼旨在提升課程參與者的工作效率，涵蓋如何自動化Google Sheets的數據操作、整合Google Gemini API進行AI問答與分類，以及如何生成並計算文本向量相似度等功能。
+This project contains a series of Google Apps Script code examples designed for the [Cloud Education Chain Workplace AI Software and Cloud Application Course](https://www.cxcxc.io/agentic-ai-course/).  These scripts aim to enhance participant productivity by automating Google Sheets data manipulation, integrating with the Google Gemini API for AI question answering and classification, and generating and calculating text vector similarity.
 
-## 功能列表
+## Feature List
 
-- **HTTP GET/POST 數據處理**：自動化Google Sheets中的數據查詢、插入與更新。
-- **AI 問答與分類**：透過Google Gemini API進行文本問答生成及文本分類操作。
-- **文本向量生成與相似度計算**：將文本轉換為向量表示，並計算其相似度。
-- **圖片問答解析：提供圖片URL，將圖片轉換為Base64後，透過Gemini API進行問答。
-- **網頁內容抓取與問答生成：自動抓取指定網頁內容，並進行問答生成，增強答案的準確性。
-- **PDF文件生成：基於Google Docs範本自動生成PDF文件，並可指定範本參數進行動態替換。
-- **圖片儲存至Google Drive：自動下載網路圖片並儲存至Google Drive資料夾。
+- **HTTP GET/POST Data Handling**: Automates data querying, insertion, and updates within Google Sheets.
+- **AI Question Answering and Classification**: Utilizes the Google Gemini API for text-based question answering and text classification.
+- **Text Vector Generation and Similarity Calculation**: Converts text into vector representations and calculates their similarity.
+- **Image Question Answering**: Provides image URL, converts the image to Base64, and uses the Gemini API for question answering.
+- **Web Content Scraping and Question Answering**: Automatically scrapes content from specified web pages and performs question answering, enhancing answer accuracy.
+- **PDF Document Generation**: Automatically generates PDF documents based on Google Docs templates, with dynamic parameter substitution.
+- **Image Saving to Google Drive**: Automatically downloads images from the web and saves them to a Google Drive folder.
 
-## 應用場景
+## Application Scenarios
 
-這些Google Apps Script程式碼可在以下情境中應用：
+These Google Apps Script codes can be applied in the following scenarios:
 
-1. **自動化數據處理**：在企業報告生成過程中，減少手動操作的錯誤與耗時。
-2. **AI 驅動的文本分類與分析**：快速分類客戶反饋，提取重要資訊並及時做出決策。
-3. **向量相似度計算**：在客服系統中快速找到相似問題的解答，提升客服效率。
-4. **業務流程自動化**：自動處理和分類來自各部門的數據，提升生產力。
+1. **Automated Data Processing**: Reduces manual errors and time consumption during business report generation.
+2. **AI-Driven Text Classification and Analysis**: Quickly classifies customer feedback, extracts key information, and facilitates timely decision-making.
+3. **Vector Similarity Calculation**: Quickly finds answers to similar questions in customer service systems, improving efficiency.
+4. **Business Process Automation**: Automates the processing and classification of data from various departments, increasing productivity.
 
-如需課程包班合作，可加入Line官方號進行：[https://lin.ee/nlPnBYS](https://lin.ee/nlPnBYS)
+For group course collaborations, please contact us via our Line official account: [https://lin.ee/nlPnBYS](https://lin.ee/nlPnBYS)
 
-## 安裝與使用
+## Installation and Usage
 
-1. **複製專案**：將此專案克隆至您的Google Apps Script專案中。
-2. **配置API Key**：在專案設定中加入Google Gemini API的密鑰。
-3. **運行範例**：使用範例函數進行測試，確認API整合與功能正常運作。
+1. **Copy Project**: Clone this project into your Google Apps Script project.
+2. **Configure API Key**: Add your Google Gemini API key in the project settings (Script Properties).
+3. **Run Examples**: Use the example functions for testing and verify API integration and functionality.
 
-## 授權條款
+## License
 
-本專案依照MIT License開源，歡迎自由使用、修改與分發。如需進一步合作或課程包班合作，請參考[雲育鏈官網](https://www.cxcxc.io/)。
+This project is open-sourced under the MIT License. Feel free to use, modify, and distribute it.  For further collaboration or group course inquiries, please refer to the [Cloud Education Chain website](https://www.cxcxc.io/).
 
-## 聯繫我們
+## Contact Us
 
-如有任何問題或建議，歡迎通過[雲育鏈Line官方號](https://lin.ee/nlPnBYS)聯繫我們。
-
-
-# 在Google Spreadsheet中使用Google Apps Script調用Gemini API
-
-## 概述
-
-本教學將介紹如何在Google Spreadsheet中使用Google Apps Script調用Gemini API來實現自動化功能。透過這個教學，您將學會如何使用Apps Script來完成問答生成、文本分類及向量操作。
-
-## 先決條件
-
-取得Google API金鑰（API Key）
-請確保您已經從Google AI Studio 取得了Gemini API的API Key。
-並在該Appscript管理介面，新增了指令碼屬性 Script Property
+For any questions or suggestions, please contact us through our [Cloud Education Chain Line official account](https://lin.ee/nlPnBYS).
 
 
-確保已經將程式碼添加到您的Google Apps Script專案中。
+# Using Google Apps Script in Google Sheets to Call the Gemini API
 
-## 各功能導引目錄
+## Overview
 
-# 在Google Spreadsheet中使用Google Apps Script調用Gemini API
+This tutorial demonstrates how to use Google Apps Script within Google Sheets to call the Gemini API for automation. You will learn how to use Apps Script for question answering, text classification, and vector operations.
+
+## Prerequisites
+
+* Obtain a Google API Key (API Key) from Google AI Studio.
+* Ensure you have added the API Key as a Script Property in your Apps Script project.
+* Ensure the provided code has been added to your Google Apps Script project.
+
+## Function Guide Directory
+
+# Using Google Apps Script in Google Sheets to Call the Gemini API
 
 [GitHub Repository](https://github.com/cxcxc-io/ai-agent_with_sheet)
 
-[教學文件 - tutorial.md](https://github.com/cxcxc-io/ai-agent_with_sheet/blob/main/tutorial.md)
+[Tutorial Document - tutorial.md](https://github.com/cxcxc-io/ai-agent_with_sheet/blob/main/tutorial.md)
 
-## 目錄
-- [GeminiQA 使用教學](#geminiqa-使用教學)
-- [GeminiQAFromImage 使用教學](#geminiqafromimage-使用教學)
-- [GeminiClassify 使用教學](#geminiclassify-使用教學)
-- [GeminiVector001 使用教學](#geminivector001-使用教學)
-- [GeminiVectorSimilarCalculate 使用教學](#geminivectorsimilarcalculate-使用教學)
-- [GeminiQAWithWeb 使用教學](#geminiqawithweb-使用教學)
-- [doGet 使用教學](#doget-使用教學)
-- [doPost 使用教學](#dopost-使用教學)
+## Table of Contents
+- [GeminiQA Tutorial](#geminiqa-tutorial)
+- [GeminiQAFromImage Tutorial](#geminiqafromimage-tutorial)
+- [GeminiClassify Tutorial](#geminiclassify-tutorial)
+- [GeminiVector001 Tutorial](#geminivector001-tutorial)
+- [GeminiVectorSimilarCalculate Tutorial](#geminivectorsimilarcalculate-tutorial)
+- [GeminiQAWithWeb Tutorial](#geminiqawithweb-tutorial)
+- [doGet Tutorial](#doget-tutorial)
+- [doPost Tutorial](#dopost-tutorial)
 
-## `GeminiQA` 使用教學
+## `GeminiQA` Tutorial
 
-### 功能：
-`GeminiQA` 函數用於透過Google Apps Script調用Gemini API，針對您提出的問題生成對應的答案。您只需要提供一個問題，Gemini API將返回最合適的答案。
+### Functionality:
+The `GeminiQA` function uses Google Apps Script to call the Gemini API and generate answers to your questions. You simply provide a question, and the Gemini API returns the most appropriate answer.
 
-### 使用方式：
+### Usage:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQA`：
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiQA`:
    ```javascript
-   =GeminiQA("你的問題")
-
-
-
-## `GeminiQA` 使用教學
-
-### 功能：
-`GeminiQA` 函數用於透過Google Apps Script調用Gemini API，針對您提出的問題生成對應的答案。您只需要提供一個問題，Gemini API將返回最合適的答案。
-
-### 使用方式：
-
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQA`：
-   ```javascript
-   =GeminiQA("你的問題")
+   =GeminiQA("Your question")
    ```
 
-## `GeminiQAFromImage` 使用教學
+## `GeminiQAFromImage` Tutorial
 
-### 功能：
-`GeminiQAFromImage` 函數用於透過Google Apps Script調用Gemini API，將圖片轉換為Base64格式後進行問答生成。您可以提供一個問題和圖片的網址，並由Gemini API返回解析結果。
+### Functionality:
+The `GeminiQAFromImage` function uses Google Apps Script to call the Gemini API for question answering based on an image. You provide a question and the image URL, and the Gemini API returns the analyzed result after converting the image to Base64.
 
-### 使用方式：
+### Usage:
 
-
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQAFromImage`：
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiQAFromImage`:
    ```javascript
-   =GeminiQAFromImage("你的問題", "圖片網址")
+   =GeminiQAFromImage("Your question", "Image URL")
    ```
 
-## `GeminiClassify` 使用教學
+## `GeminiClassify` Tutorial
 
-### 功能：
-`GeminiClassify` 函數用於透過Google Apps Script調用Gemini API，將輸入的文本內容根據指定的分類進行分類操作。您可以提供一個分類數組和要分類的文本內容，Gemini API將返回對應的分類結果。
+### Functionality:
+The `GeminiClassify` function uses Google Apps Script to call the Gemini API to classify input text based on specified categories.  You provide an array of categories and the text to be classified, and the Gemini API returns the corresponding classification result.
 
-### 使用方式：
+### Usage:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiClassify`：
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiClassify`:
    ```javascript
-   =GeminiClassify({"分類1", "分類2", "分類3"}, "要分類的內容")
+   =GeminiClassify({"Category 1", "Category 2", "Category 3"}, "Text to classify")
    ```
 
-## `GeminiVector001` 使用教學
+## `GeminiVector001` Tutorial
 
-### 功能：
-`GeminiVector001` 函數用於透過Google Apps Script調用Gemini API，生成文本的向量表示。該向量表示可以用於計算文本相似度或進行其他向量操作。
+### Functionality:
+The `GeminiVector001` function uses Google Apps Script to call the Gemini API to generate a vector representation of text. This vector representation can be used for calculating text similarity or other vector operations.
 
-### 使用方式：
+### Usage:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiVector001`：
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiVector001`:
    ```javascript
-   =GeminiVector001("要生成向量的文本")
-    ```
-## `GeminiVectorSimilarCalculate` 使用教學
+   =GeminiVector001("Text to generate vector for")
+   ```
 
-### 功能：
-`GeminiVectorSimilarCalculate` 函數用於透過Google Apps Script計算兩個向量之間的相似度。該相似度通常以餘弦相似度的形式表示，範圍在 -1 到 1 之間。該函數可以用於比較兩段文本的相似程度，前提是這兩段文本已經被向量化。
+## `GeminiVectorSimilarCalculate` Tutorial
 
-### 使用方式：
+### Functionality:
+The `GeminiVectorSimilarCalculate` function uses Google Apps Script to calculate the similarity between two vectors. The similarity is usually represented as cosine similarity, ranging from -1 to 1. This function can be used to compare the similarity of two texts, provided that both texts have been vectorized.
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiVectorSimilarCalculate`：
+### Usage:
+
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiVectorSimilarCalculate`:
    ```javascript
-   =GeminiVectorSimilarCalculate("向量1的字串", "向量2的字串")
-    ```
+   =GeminiVectorSimilarCalculate("String of vector 1", "String of vector 2")
+   ```
 
-### 使用範例
+### Example Usage:
 ```
 =GeminiVectorSimilarCalculate("0.123, 0.456, 0.789", "0.321, 0.654, 0.987")
 ```
 
-## `GeminiQAWithWeb` 使用教學
+## `GeminiQAWithWeb` Tutorial
 
-### 功能：
-`GeminiQAWithWeb` 由於Gemini尚未支援中文當作function call，請注意此方法一定要用英文來問, 函數用於透過Google Apps Script調用Gemini API，處理更為複雜的問答生成任務。這個函數允許在問答過程中使用特定功能（如抓取網頁內容）來補充和擴展答案，從而提升回答的準確性和全面性。
+### Functionality:
+The `GeminiQAWithWeb` function (**requires questions in English due to current Gemini function call limitations**) uses Google Apps Script to call the Gemini API for more complex question-answering tasks. This function allows the use of specific features (like fetching web content) during the Q&A process to supplement and expand answers, thereby improving accuracy and comprehensiveness.
 
-### 使用方式：
+### Usage:
 
-1. **在Google Spreadsheet中使用**：
-   - 在Spreadsheet的任意儲存格內輸入以下公式來調用`GeminiQAWithWeb`：
+1. **In Google Sheets**:
+   - Enter the following formula in any cell to call `GeminiQAWithWeb`:
    ```javascript
-   =GeminiQAWithWeb("你的問題，請用英文表達，若有網址，則會幫你訪問此網址")
+   =GeminiQAWithWeb("Your question in English. If you include a URL, it will be accessed.")
    ```
-### 使用範例
+
+### Example Usage:
 ```
-GeminiQAWithWeb("What content is available on https://example.com?")
+=GeminiQAWithWeb("What content is available on https://example.com?")
 ```
 
-## `doGet` 使用教學
 
-### 功能：
-`doGet` 函數用於處理HTTP GET請求，從Google Spreadsheet中提取數據並根據查詢參數進行過濾、排序及分頁。此功能特別適合於需要從表格中動態提取數據的應用場景，例如生成API端點以供外部應用程序訪問數據。
+## `doGet` Tutorial
 
-### 使用方式：
+### Functionality:
+The `doGet` function handles HTTP GET requests, extracting data from a Google Spreadsheet and filtering, sorting, and paginating it based on query parameters. This is particularly useful for applications that require dynamically retrieving data from a spreadsheet, such as creating API endpoints for external applications to access the data.
 
-1. **在Google Apps Script中部署Web應用**：
-   - 在Google Apps Script編輯器中，點擊 `部署` > `部署為網頁應用`。
-   - 設定誰可以訪問應用為 `任何擁有此應用程式網址的人`。
-   - 點擊 `部署` 並獲取應用的URL。
+### Usage:
 
-2. **通過HTTP GET請求使用`doGet`**：
-   - 使用Web瀏覽器或HTTP客戶端（如Postman、cURL）訪問該應用的URL，並添加查詢參數進行數據查詢。
-   - 範例URL格式：
+1. **Deploy as a Web App in Google Apps Script**:
+   - In the Google Apps Script editor, click `Deploy` > `New deployment`.
+   - Set "Who has access" to "Anyone".
+   - Click `Deploy` and obtain the web app URL.
+
+2. **Use `doGet` with HTTP GET requests**:
+   - Use a web browser or an HTTP client (like Postman or cURL) to access the deployed web app URL with query parameters for data retrieval.
+   - Example URL format:
    ```url
    https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=normal&filter_column=colA=ValueA&exclude_columns=colB
-### 共通的查詢參數說明
-* **sheet_name** (required): 指定要查詢的工作表名稱。
-* **query_mode** (optional): 查詢模式，支持 normal、rag 和 graph_rag 模式。預設為 normal。
-* **exclude_columns** (optional): 需要排除的欄位名稱列表，以逗號分隔（如 colA,colB,colC）。
-- **page** (optional): 指定返回結果的頁碼，預設為第1頁。
-- **page_size** (optional): 指定每頁返回的記錄數量，預設為10。
+   ```
 
-### `doGet` 模式查詢說明與範例
+### Common Query Parameters:
+* **sheet_name** (required): Specifies the sheet name to query.
+* **query_mode** (optional): Query mode, supports `normal`, `rag`, and `graph_rag`. Defaults to `normal`.
+* **exclude_columns** (optional): Comma-separated list of column names to exclude (e.g., `colA,colB,colC`).
+* **page** (optional): Specifies the page number of results to return. Defaults to 1.
+* **page_size** (optional): Specifies the number of records per page. Defaults to 10.
 
-### normal 模式
 
-#### 說明：
-`normal` 模式是最基本的查詢模式，允許您根據指定的查詢參數從Google Spreadsheet中提取並篩選數據。您可以使用篩選條件、排除特定欄位、進行分頁等操作。
+### `doGet` Query Mode Details and Examples
 
-#### 查詢參數：
 
-- **資料表內任意欄位**: 依照你資料表現有的欄位資料篩選
+### `normal` Mode
 
-#### 範例：
-查詢 `Sheet1` 中符合 `colA` 等於 `ValueA` 的數據，排除 `colB`，並顯示第1頁的前10條結果。
+#### Description:
+`normal` mode is the most basic query mode, allowing you to extract and filter data from a Google Spreadsheet based on specified query parameters.  You can use filter conditions, exclude specific columns, and paginate results.
+
+#### Query Parameters:
+- **Any column name in the sheet**:  Filter based on the data present in your sheet's columns.
+
+#### Example:
+Query `Sheet1` for data where `colA` equals `ValueA`, exclude `colB`, and display the first 10 results on page 1.
 
 ```url
 https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=normal&exclude_columns=colB&page=1&page_size=10&your_data_column_name>=10
 ```
 
-### rag 模式
+### `rag` Mode
 
-#### 說明：
-`rag` 模式（基於向量檢索的增強生成模式）允許您將查詢字串轉換為向量，並與指定欄位中的向量進行相似度比較。此模式特別適合於需要基於語義相似度進行數據篩選的場景。
+#### Description:
+`rag` mode (Retrieval Augmented Generation) allows you to convert a query string into a vector and compare it with vectors in a specified column for similarity. This mode is particularly useful for data filtering based on semantic similarity.
 
-#### 查詢參數：
-- **search_term**: 用於查詢的字串，將被轉換為向量以進行相似度比較。
-- **compare_vector_column**: 指定與 `search_term` 生成的向量進行比較的欄位名稱。
-- **threshold**: 指定相似度閾值，僅保留相似度大於等於該閾值的結果。
+#### Query Parameters:
+- **search_term**: The query string to be converted into a vector for similarity comparison.
+- **compare_vector_column**: The column name containing the vectors to compare against the `search_term` vector.
+- **threshold**:  The similarity threshold. Only results with similarity greater than or equal to this threshold are returned.
 
-#### 範例：
-查詢 `Sheet1` 中，`search_term` 與 `vector_col` 中的向量相似度大於等於 `0.75` 的數據，並顯示第1頁的前10條結果。
+#### Example:
+Query `Sheet1` where the similarity between `search_term` and vectors in `vector_col` is greater than or equal to `0.75`, and display the first 10 results on page 1.
 
 ```url
 https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_mode=rag&search_term=Example%20Query&compare_vector_column=vector_col&threshold=0.75&page=1&page_size=10
 ```
 
-## `doPost` 使用教學
-
-### 功能：
-`doPost` 函數用於處理HTTP POST請求，根據 `function_name` 參數執行不同的操作：
-- **`insert_data`**：將請求的JSON數據插入到指定的Google Spreadsheet工作表中，並根據表頭自動匹配相應的欄位進行插入。
-- **`mail_user`**：根據提供的收件人列表發送郵件，若未指定信件標題，則會自動使用當天日期作為預設標題。
-- **`store_image_to_drive`**：將指定的網路圖片下載並儲存到Google Drive中，若提供了 `folder_name`，則會儲存在指定資料夾內，否則將以當前Spreadsheet的名稱作為資料夾名稱。
-- **`create_pdf_from_doc_template`**：使用指定的Google Docs範本自動生成PDF，並根據POST中的替換字典自動替換範本中的關鍵字或標記。可選擇將生成的PDF儲存在指定的Google Drive資料夾中，並設定權限為「有連結的人可讀」，方便共享。若未提供檔案名稱或資料夾，系統將自動命名並儲存於範本文件的父資料夾中。
 
 
-這些功能適合於需要自動化地將數據寫入Google Spreadsheet或發送郵件的情境。
 
-### 使用方式：
+## `doPost` Tutorial
 
-#### 1. 在Google Apps Script中部署Web應用：
-   - 在Google Apps Script編輯器中，點擊 `部署` > `部署為網頁應用`。
-   - 設定應用的訪問權限為 `任何擁有此應用程式網址的人`。
-   - 點擊 `部署`，並獲取應用的URL。
-
-#### 2. 通過HTTP POST請求使用`doPost`：
-   - 使用HTTP客戶端（如Postman、cURL）向應用的URL發送POST請求。
-   - 根據不同的功能，在POST Body中指定 `function_name` 及其他所需參數。
-
-### POST Body 格式：
-請求正文應為JSON格式，包含以下參數：
-
-#### 通用參數：
-- **function_name**: 指定所需執行的功能，可以是 `insert_data` 或 `mail_user`。
-
-#### `insert_data` 模式：
-- **sheet_name**: 必須參數，指定要插入數據的Google Spreadsheet工作表名稱。
-- 其他字段：需對應Google Spreadsheet中的列名。
-
-#### `mail_user` 模式：
-- **sender_emails**: 必須參數，收件人的郵件地址列表。
-- **email_subject**: 可選參數，信件的標題；若未提供，則會使用當天日期作為標題。
-- **email_content**: 必須參數，信件內容，支持HTML格式。
-
-#### `store_image_to_drive` 模式：
-- **image_url**: 必須參數，指定要下載的圖片URL。
-- **folder_name**: 可選參數，指定圖片儲存的資料夾名稱；若未提供，會以當前Spreadsheet的名稱作為資料夾名稱。
-
-#### `create_pdf_from_doc_template` 模式：
-- **template_doc_name**: 可選參數，指定Google Docs範本文件名稱，若未提供，則使用"文件範本"作為預設名稱。
-- **pdf_file_name**: 可選參數，生成的PDF檔案名稱，若未指定，則使用當前時間戳與隨機碼生成唯一名稱。
-- **folder_name**: 可選參數，指定儲存生成PDF的Google Drive資料夾名稱，若未提供，則使用範本所在資料夾。
-- **replace_map**: 必須參數，包含範本替換字典，用於動態替換範本中的文字。
+### Functionality:
+The `doPost` function handles HTTP POST requests, performing different actions based on the `function_name` parameter:
+- **`insert_data`**: Inserts JSON data from the request into the specified Google Spreadsheet sheet, automatically matching fields based on headers.
+- **`mail_user`**: Sends emails to a provided list of recipients.  If no subject is specified, the current date is used as the default subject.
+- **`store_image_to_drive`**: Downloads and saves a specified image URL to Google Drive. If a `folder_name` is provided, the image is saved within that folder; otherwise, a folder with the current Spreadsheet's name is used.
+- **`create_pdf_from_doc_template`**: Generates a PDF automatically using a specified Google Docs template, replacing keywords or markers within the template based on a replacement dictionary provided in the POST request.  Optionally saves the generated PDF to a specified Google Drive folder with "Anyone with the link can view" permissions for easy sharing.  If no file name or folder is provided, the system will automatically name and save the PDF in the parent folder of the template document.
 
 
-### 範例：
+These functionalities are suitable for scenarios requiring automated data writing to Google Sheets or sending emails.
 
-#### 1. 插入數據至工作表 (`insert_data` 模式)：
-將 `name` 和 `email` 插入至名為 `Sheet1` 的工作表中。
+### Usage:
+
+1. **Deploy as a Web App in Google Apps Script**:
+   - In the Google Apps Script editor, click `Deploy` > `New Deployment`.
+   - Set "Who has access" to "Anyone".
+   - Click `Deploy` and obtain the web app URL.
+
+2. **Use `doPost` with HTTP POST requests**:
+   - Use an HTTP client (like Postman or cURL) to send POST requests to the deployed web app URL.
+   - Specify `function_name` and other required parameters in the POST body based on the desired functionality.
+
+
+### POST Body Format:
+The request body should be in JSON format and contain the following parameters:
+
+#### Common Parameters:
+- **function_name**: Specifies the desired function to execute (e.g., `insert_data`, `mail_user`, `store_image_to_drive`, `create_pdf_from_doc_template`).
+
+
+#### `insert_data` Mode:
+- **sheet_name**: Required.  Specifies the Google Spreadsheet sheet name where data should be inserted.
+- Other fields: Should correspond to column names in your Google Spreadsheet.
+
+#### `mail_user` Mode:
+- **sender_emails**: Required. List of recipient email addresses.
+- **email_subject**: Optional. The email subject. If not provided, the current date will be used.
+- **email_content**: Required. The email body content, supports HTML formatting.
+
+
+#### `store_image_to_drive` Mode:
+- **image_url**: Required.  The URL of the image to download.
+- **folder_name**: Optional. The name of the folder in Google Drive to save the image to. If not provided, a folder named after the Spreadsheet will be used.
+
+#### `create_pdf_from_doc_template` Mode:
+- **template_doc_name**: Optional.  Specifies the name of the Google Docs template document. Defaults to "Document Template" if not provided.
+- **pdf_file_name**: Optional. The name of the generated PDF file. If not specified, a unique name will be generated using the current timestamp and a random code.
+- **folder_name**: Optional. The name of the Google Drive folder to save the generated PDF to. If not provided, the folder containing the template will be used.
+- **replace_map**: Required. Contains a dictionary of replacement values for dynamic text substitution within the template.
+
+
+### Examples:
+
+
+#### 1. Insert Data into Sheet (`insert_data` Mode):
+Insert `name` and `email` into a sheet named `Sheet1`.
 
 ```json
 {
@@ -296,8 +291,8 @@ https://script.google.com/macros/s/your-script-id/exec?sheet_name=Sheet1&query_m
 }
 ```
 
-使用cURL發送請求：
-```
+Using cURL:
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
@@ -309,18 +304,22 @@ curl -X POST \
   }'
 ```
 
-#### 2. 發送郵件 (mail_user 模式)：
 
-發送一封內容為 Welcome! 的信件，標題為當天日期，給多個收件人。
-```
+#### 2. Send Email (`mail_user` Mode):
+
+Send an email with the content "Welcome!" and the current date as the subject to multiple recipients.
+
+```json
 {
   "function_name": "mail_user",
   "sender_emails": ["user1@example.com", "user2@example.com"],
   "email_content": "<h1>Welcome!</h1><p>Thank you for joining us!</p>"
 }
 ```
-使用cURL發送請求
-```
+
+
+Using cURL:
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
@@ -331,18 +330,22 @@ curl -X POST \
   }'
 ```
 
-#### 3.儲存網路圖片到Google Drive (store_image_to_drive 模式)：：
 
-將指定的圖片儲存至指定的Google Drive資料夾，若資料夾名稱未指定，則以Spreadsheet名稱為資料夾名稱。
-```
+#### 3. Store Image to Google Drive (`store_image_to_drive` Mode):
+
+Save a specified image to a designated Google Drive folder.  If no folder name is provided, the Spreadsheet's name will be used as the folder name.
+
+```json
 {
   "function_name": "store_image_to_drive",
   "image_url": "https://example.com/image.jpg",
   "folder_name": "MyImagesFolder"
 }
 ```
-使用cURL發送請求
-```
+
+
+Using cURL:
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
@@ -353,33 +356,37 @@ curl -X POST \
   }'
 ```
 
-#### 4.基於範本生成PDF (create_pdf_from_doc_template 模式)：
 
-```
+#### 4. Generate PDF from Template (`create_pdf_from_doc_template` Mode):
+
+
+```json
 {
   "function_name": "create_pdf_from_doc_template",
-  "template_doc_name": "課程證書範本",
-  "pdf_file_name": "學員證書",
-  "folder_name": "證書",
+  "template_doc_name": "Course Certificate Template",
+  "pdf_file_name": "Student Certificate",
+  "folder_name": "Certificates",
   "replace_map": {
-    "{{姓名}}": "張三",
-    "{{課程名稱}}": "AI應用課程"
+    "{{Name}}": "John Doe",
+    "{{Course Name}}": "AI Application Course"
   }
 }
 ```
-使用cURL發送請求
-```
+
+
+Using cURL:
+```bash
 curl -X POST \
   https://script.google.com/macros/s/your-script-id/exec \
   -H 'Content-Type: application/json' \
   -d '{
   "function_name": "create_pdf_from_doc_template",
-  "template_doc_name": "課程證書範本",
-  "pdf_file_name": "學員證書",
-  "folder_name": "證書",
+  "template_doc_name": "Course Certificate Template",
+  "pdf_file_name": "Student Certificate",
+  "folder_name": "Certificates",
   "replace_map": {
-    "{{姓名}}": "張三",
-    "{{課程名稱}}": "AI應用課程"
+    "{{Name}}": "John Doe",
+    "{{Course Name}}": "AI Application Course"
   }
 }'
 ```
